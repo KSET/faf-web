@@ -8,12 +8,15 @@ type Props = {
   useBackground?: boolean;
 };
 
-export const Footer = ({useBackground = true}: Props) => {
+export const Footer = ({ useBackground = true }: Props) => {
   const links = [
-    { name: "facebook", link: "https://www.facebook.com/profile.php?id=61559876610924" },
+    {
+      name: "facebook",
+      link: "https://www.facebook.com/profile.php?id=61559876610924",
+    },
     { name: "instagram", link: "https://www.instagram.com/fafzagreb/" },
     { name: "faf@kset.org", link: "mailto:faf@kset.org" },
-    { name: "press@kset.org", link: "mailto:press@kset.org" }
+    { name: "press@kset.org", link: "mailto:press@kset.org" },
   ];
 
   return (
@@ -24,24 +27,34 @@ export const Footer = ({useBackground = true}: Props) => {
         </Link>
         <Links>
           {links.map((link) => {
-            return <a href={link.link} target="_blank">{link.name}</a>;
+            return (
+              <a href={link.link} target="_blank">
+                {link.name}
+              </a>
+            );
           })}
         </Links>
         <Logos>
-          <a href="https://www.ssfer.hr/" target="_blank"><img src={ssfer} alt="ssfer" /></a>
-          <a href="https://www.kset.org/" target="_blank"><img src={kset} alt="kset" /></a>
+          <a href="https://www.ssfer.hr/" target="_blank">
+            <img src={ssfer} alt="ssfer" />
+          </a>
+          <a href="https://www.kset.org/" target="_blank">
+            <img src={kset} alt="kset" />
+          </a>
         </Logos>
-        Sva prava pridržana © {new Date().getFullYear()} <br/> Savez studenata FER-a
+        Sva prava pridržana © {new Date().getFullYear()} <br /> Savez studenata
+        FER-a
       </Container>
     </>
   );
 };
 
 const Container = styled.div<{ useBackground: boolean }>`
-  background-color: ${(props) => (props.useBackground ? "#FFC73F" : "transparent")};
-text-align: center;
-    font-family: "Montserrat";
-    font-weight: 600;
+  background-color: ${(props) =>
+    props.useBackground ? "#FFC73F" : "transparent"};
+  text-align: center;
+  font-family: "Montserrat";
+  font-weight: 600;
   margin-top: 100px;
   width: 100%;
   display: flex;
