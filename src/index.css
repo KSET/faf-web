@@ -1,0 +1,32 @@
+@font-face {
+  font-family: 'Akira';
+  src: url('/resources/fonts/akira.otf');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  src: url('/resources/fonts/montserrat.ttf');
+  
+}
+
+
+:root {
+  line-height: 1.5;
+  font-weight: 400;
+
+  color: rgba(255, 255, 255, 0i.87);
+  background-color: #FFF0AF;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibilty;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
