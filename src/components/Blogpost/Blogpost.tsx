@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import {Link } from "wouter";
+import { Link } from "wouter";
 import { urlFor, formatDate } from "../../sanity";
 
 type Props = {
@@ -10,9 +10,11 @@ type Props = {
 };
 
 export const Blogpost = ({ title, date, image, slug }: Props) => {
-
   return (
-    <Container image={urlFor(image)} href={`/post/${slug}`}>
+    <Container href={`/post/${slug}`}>
+
+        <StyledImg src={urlFor(image)} alt={title} />
+
       <Content>
         <Title>{title}</Title>
         <Date>{formatDate(date)}</Date>
@@ -21,39 +23,44 @@ export const Blogpost = ({ title, date, image, slug }: Props) => {
   );
 };
 
-const Container = styled(Link)<{ image: string }>`
-  height: 200px;
-  
-  background: linear-gradient(
-      180deg,
-      rgba(0, 0, 0, 0) 0%,
-      rgba(0, 0, 0, 0.58) 100%
-    ),
-    url(${(props) => props.image}) #FF3640 90% / cover no-repeat;
-  color: #fff;
-  font-family: Montserrat;
 
+
+const StyledImg = styled.img`
+  width: 50%;
+
+  @media (min-width: 768px) {
+    width: 100%;
+  }
+
+`;
+
+const Container = styled(Link)`
+  background-color: white;
+  width: 100%;
   line-height: normal;
   display: flex;
-  align-items: flex-end;
+  flex-direction: row;
   border: 1px solid #000;
   box-shadow: 10px 10px 0px 0px #000;
   cursor: pointer;
   transition: 0.3s;
   text-decoration: none;
+  align-items: center;
 
   &:hover {
     box-shadow: 5px 5px 0px -1px #000;
     transform: translateY(0.5rem) translateX(0.5rem);
   }
   @media (min-width: 768px) {
-    flex: 1 1 0px;
-    height: 300px;
+    width: 30%;
+    flex-direction: column;
   }
 `;
 
-
 const Content = styled.div`
+
+  color: black;
+  font-family: Montserrat;
   padding: 20px 20px 0;
 `;
 
