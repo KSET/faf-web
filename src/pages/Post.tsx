@@ -66,7 +66,7 @@ function Post() {
         <Content>
           <Title>{post.title}</Title>
           <PublishedAt>Objavljeno {formatDate(post.publishedAt)}</PublishedAt>
-          <MainImage src={urlFor(post.mainImage)} alt={post.title} />
+          {/* <MainImage src={urlFor(post.mainImage)} alt={post.title} /> */}
           <PortableText value={post.body} components={ptComponents} />
         </Content>
       </Container>
@@ -86,16 +86,16 @@ export const Container = styled.div`
   align-items: center;
 `;
 
-const MainImage = styled.img`
-  width: 100%;
-`;
+// const MainImage = styled.img`
+//   width: 100%;
+// `;
 
 const Image = styled.img`
   max-width: 100%;
 `;
 
 export const Content = styled.div`
-  margin-top: 200px;
+  margin-top:20px;
   width: 85%;
   max-width: 1024px;
   font-family: "Montserrat";
