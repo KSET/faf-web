@@ -1,10 +1,22 @@
-import React from "react";
+import React, { useEffect } from "react";
 import ReactDOM from "react-dom/client";
-import { Route, Switch } from "wouter";
+import { Route, Switch, useLocation } from "wouter";
 import App from "./pages/App.tsx";
 import Posts from "./pages/Posts.tsx";
 import Post from "./pages/Post.tsx";
 import { Helmet } from "react-helmet";
+
+const ScrollToTop = () => {
+  const [pathname] = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
+};
+
+
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
@@ -31,6 +43,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         content="https://scontent-sof1-1.xx.fbcdn.net/v/t39.30808-6/441950774_122098346168329220_6558152393466858500_n.png?_nc_cat=104&ccb=1-7&_nc_sid=5f2048&_nc_eui2=AeFGhjifbL_mNz8YPMlRtsXEH5nDs9ZZQsYfmcOz1llCxj71QLD_gsj40diKsblhKdJ6GlZfzT-kdbdL_-DqN_1s&_nc_ohc=5Zzn-qWlDucQ7kNvgFEm3cX&_nc_ht=scontent-sof1-1.xx&oh=00_AYAd7wb72AoYe8FsUvxVacRFaEv8yCl9TMbxWqZM6Z6ypg&oe=6663E62C"
       />
     </Helmet>
+    <ScrollToTop />
     <Switch>
       <Route path="/" component={App} />
 
