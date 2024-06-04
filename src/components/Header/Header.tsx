@@ -1,15 +1,36 @@
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Eye from "../../assets/eye.svg";
 import { Link } from "wouter";
 
 export const Header = () => {
+  const [isVisible, setIsVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+
+  const handleScroll = () => {
+    if (window.scrollY > lastScrollY) {
+      // Scrolling down
+      setIsVisible(false);
+    } else {
+      // Scrolling up
+      setIsVisible(true);
+    }
+    setLastScrollY(window.scrollY);
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [lastScrollY]);
+
   return (
     <>
-
-      <Container>
+      <Container isVisible={isVisible}>
         <Wrapper>
           <Link href="/">
-          <StyledLogo src={Eye} />
+            <StyledLogo src={Eye} />
           </Link>
         </Wrapper>
       </Container>
@@ -17,16 +38,18 @@ export const Header = () => {
   );
 };
 
-const Container = styled.div`
-  position: fixed;
-  width:100%;
-  top:0;
+const Container = styled.div<{ isVisible: boolean }>`
+  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  mix-blend-mode: multiply;
-  background-color: #FFC73F;
-  /* border-bottom: 10px solid #000; */
+  background-color: #ffc73f;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  transform: ${({ isVisible }) =>
+    isVisible ? "translateY(0)" : "translateY(-100%)"};
+  transition: transform 0.3s ease-in-out;
 `;
 
 const Wrapper = styled.div`
