@@ -66,12 +66,12 @@ function App() {
             <Text>
               Festival Amaterskog Filma - za prijatelje FAF, festival je u
               organizaciji studenata koji svoju ljubav prema amaterskom filmu
-              žele proširiti po cijelom svijetu. U potrazi za najboljim
-              amaterskim filmovima regije pridruži nam se u Klubu Močvara 11. i
-              12. listopada 2024.
+              žele proširiti po cijelom svijetu. <br />
+              <br /> Cijeli svijet je daleko...a Zagreb imamo kod kuće pa nam se
+              u potrazi za najboljim (amaterskim) filmovima regije možeš
+              pridružiti u Klubu Močvara 11. i 12. listopada 2024. <br />
               <br />
-              <br />
-              Gledamo se uskoro....
+              Gledamo se uskoro...
             </Text>
           </SectionWrapper>
           <SectionWrapper>
