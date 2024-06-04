@@ -1,4 +1,4 @@
-# kset-discord-verifikator-bot
+# faf-web
 
 This is the repository for the [Festival amaterskog filma](https://faf.kset.org) website.
 
