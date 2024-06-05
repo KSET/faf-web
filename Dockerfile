@@ -5,6 +5,13 @@ RUN npm ic
 COPY . .
 RUN npm run build
 
-FROM nginx:1-alpine
-COPY --from=build /app/dist /usr/share/nginx/html
+FROM caddy:2-alpine
+RUN cat > /etc/caddy/Caddyfile <<EOF
+:80 {
+  try_files {path} /
+  file_server
+  root * /app
+}
+EOF
+COPY --from=build /app/dist /app
 
