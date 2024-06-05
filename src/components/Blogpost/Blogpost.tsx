@@ -26,12 +26,7 @@ export const Blogpost = ({ title, date, image, slug }: Props) => {
 
 
 const StyledImg = styled.img`
-  width: 50%;
-
-  @media (min-width: 768px) {
-    width: 100%;
-  }
-
+  width: 100%;
 `;
 
 const Container = styled(Link)`
@@ -39,7 +34,7 @@ const Container = styled(Link)`
   width: 100%;
   line-height: normal;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   border: 1px solid #000;
   box-shadow: 10px 10px 0px 0px #000;
   cursor: pointer;
@@ -53,7 +48,6 @@ const Container = styled(Link)`
   }
   @media (min-width: 768px) {
     width: 30%;
-    flex-direction: column;
   }
 `;
 
@@ -61,13 +55,15 @@ const Content = styled.div`
 
   color: black;
   font-family: Montserrat;
-  padding: 20px 20px 0;
+  padding: 0px 20px;
 `;
 
 const Title = styled.h1`
   font-style: normal;
   font-weight: 700;
   font-size: 23px;
+  word-break: break-word;
+  overtflow-wrap: break-word;
 `;
 
 const Date = styled.p`
