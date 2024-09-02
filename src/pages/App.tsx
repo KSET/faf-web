@@ -53,10 +53,15 @@ function App() {
           <FirstLine>Festival amaterskog</FirstLine>
           <SecondLine>filma</SecondLine>
         </TitleContainer>
-        <Button
+        {/* <Button
           text="prijavi svoj film  >"
-          link={import.meta.env.VITE_APPLICATION_FORM_URL}
-        />
+          link={import.meta.env.zVITE_APPLICATION_FORM_URL}
+        /> */}
+
+        <DateLocationContainer>
+          <Location>KLUB MOČVARA</Location>
+          <Date>11. i 12. listopada 2024.</Date>
+        </DateLocationContainer>
       </HeroContainer>
 
       <ContentContainer>
@@ -106,7 +111,7 @@ const HeroContainer = styled.div`
   align-items: center;
   justify-content: center;
   padding-top: 200px;
-  padding-bottom: 200px;
+  padding-bottom: 100px;
 `;
 
 const ContentContainer = styled.div`
@@ -169,6 +174,28 @@ const SecondLine = styled.div`
   @media (min-width: 768px) {
     font-size: 3rem;
   }
+`;
+
+const DateLocationContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  font-family: "Montserrat";
+  font-size: 20px;
+  margin-top: 40px;
+
+  @media (min-width: 768px) {
+    font-size: 20px;
+  }
+`;
+
+const Location = styled.div`
+  font-weight: 900;
+`;
+
+const Date = styled.div`
+  font-weight: 600;
 `;
 
 const Text = styled.div`
