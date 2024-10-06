@@ -26,10 +26,6 @@ function Post() {
     });
   }, []);
 
-  useEffect(() => {
-    console.log(post);
-  }, [post]);
-
   const ptComponents = {
     types: {
       image: ({ value }: any) => {
@@ -66,7 +62,6 @@ function Post() {
         <Content>
           <Title>{post.title}</Title>
           <PublishedAt>Objavljeno {formatDate(post.publishedAt)}</PublishedAt>
-          {/* <MainImage src={urlFor(post.mainImage)} alt={post.title} /> */}
           <PortableText value={post.body} components={ptComponents} />
         </Content>
       </Container>
@@ -85,10 +80,6 @@ export const Container = styled.div`
   justify-content: center;
   align-items: center;
 `;
-
-// const MainImage = styled.img`
-//   width: 100%;
-// `;
 
 const Image = styled.img`
   max-width: 100%;
