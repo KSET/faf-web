@@ -9,9 +9,20 @@ export const client = createClient({
   perspective: "published",
 });
 
-export const urlFor = (source: any) => {
+export const urlFor = (source: any, width?: number, height?: number) => {
   if (!source) return "";
-  return imageUrlBuilder(client).image(source).url();
+
+  const builder = imageUrlBuilder(client).image(source);
+  
+  if (width) {
+    builder.width(width);
+  }
+  
+  if (height) {
+    builder.height(height);
+  }
+
+  return builder.url();
 };
 
 export async function getFrontpagePosts() {
@@ -34,6 +45,21 @@ export async function getPost(slug: string) {
     { slug }
   );
   return post[0];
+}
+
+export async function getAllTimeslots() {
+  const timeslots = await client.fetch(
+    '*[_type == "timeslot"] | order(publishedAt desc) { _id, title, slug, isClickable, startTime, endTime }'
+  );
+  return timeslots;
+}
+
+export async function getTimeslot(slug: string) {
+  const timeslot = await client.fetch(
+    '*[_type == "timeslot" && slug.current == $slug] { _id, title, body, isClickable, startTime, endTime, movies }',
+    { slug }
+  );
+  return timeslot[0];
 }
 
 export const formatDate = (dateStr: string) => {

@@ -5,6 +5,7 @@ import App from "./pages/App.tsx";
 import Posts from "./pages/Posts.tsx";
 import Post from "./pages/Post.tsx";
 import { Helmet } from "react-helmet";
+import Timeslot from "./pages/Timeslot.tsx";
 
 const ScrollToTop = () => {
   const [pathname] = useLocation();
@@ -50,6 +51,8 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
       <Route path="/posts" component={Posts} />
 
       <Route path="/post/:slug" component={Post} />
+
+      <Route path="/timeslot/:slug" component={Timeslot} />
       
       <Route path="/prijave">
         {() => {
