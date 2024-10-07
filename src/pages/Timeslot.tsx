@@ -188,6 +188,7 @@ const DirectorAndDuration = styled.div`
 const MovieTitle = styled.h2`
   font-size: 30px;
   margin: 5px 0;
+word-break: break-word;
 `;
 
 const MovieDescription = styled.p`
