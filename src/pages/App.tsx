@@ -75,7 +75,7 @@ const App = () => {
 
     getAllTimeslots().then((timeslots) => {
       setTimeslots(timeslots);
-      setSelectedDate("petak");
+      setSelectedDate("subota");
     });
   }, []);
 
