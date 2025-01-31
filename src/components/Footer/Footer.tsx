@@ -3,6 +3,7 @@ import Logo from "../../assets/logo.svg";
 import { Link } from "wouter";
 import ssfer from "../../assets/ssfer-crni.svg";
 import kset from "../../assets/kset-crni.svg";
+import szzg from "../../assets/szzg.svg";
 
 type Props = {
   useBackground?: boolean;
@@ -35,11 +36,15 @@ export const Footer = ({ useBackground = true }: Props) => {
           })}
         </Links>
         <Logos>
+
           <a href="https://www.ssfer.hr/" target="_blank">
             <LogoSVG src={ssfer} alt="ssfer" />
           </a>
           <a href="https://www.kset.org/" target="_blank">
             <LogoSVG src={kset} alt="kset" />
+          </a>
+          <a href="https://szzg.unizg.hr/" target="_blank">
+            <LogoSVG src={szzg} alt="szzg" />
           </a>
         </Logos>
         Sva prava pridržana © {new Date().getFullYear()} <br /> Savez studenata
@@ -96,5 +101,5 @@ const Logos = styled.div`
 `;
 
 const LogoSVG = styled.img`
-  height:50px;
+  height: 50px;
 `;
