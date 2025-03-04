@@ -26,12 +26,12 @@ const groupByDate = (timeslots: Timeslot[]) => {
   const groupedTimeslots = timeslots.reduce<Record<string, Timeslot[]>>(
     (acc, timeslot) => {
       const startDate = new Date(timeslot.startTime);
-      
-      const formattedDate = startDate.toISOString().split('T')[0];
-      
-      const petakDate = '2024-10-11';      
 
-      const dateLabel = formattedDate === petakDate ? 'petak' : 'subota';
+      const formattedDate = startDate.toISOString().split("T")[0];
+
+      const petakDate = "2024-10-11";
+
+      const dateLabel = formattedDate === petakDate ? "petak" : "subota";
 
       if (!acc[dateLabel]) {
         acc[dateLabel] = [];
@@ -123,7 +123,7 @@ const App = () => {
 
         <DateLocationContainer>
           <Location>KLUB MOČVARA</Location>
-          <StyledDate>11. i 12. listopada 2024.</StyledDate>
+          <StyledDate>18. - 19. 10. 2025.</StyledDate>
         </DateLocationContainer>
       </HeroContainer>
 
@@ -137,58 +137,62 @@ const App = () => {
               žele proširiti po cijelom svijetu. <br />
               <br /> Cijeli svijet je daleko...a Zagreb imamo kod kuće pa nam se
               u potrazi za najboljim (amaterskim) filmovima regije možeš
-              pridružiti u Klubu Močvara 11. i 12. listopada 2024. <br />
+              pridružiti u Klubu Močvara 18. i 19. listopada 2025. <br />
               <br />
               Gledamo se uskoro...
             </Text>
           </SectionWrapper>
 
-          <SectionWrapper>
-            <Title text="Raspored" />
+          {timeslots.length > 0 && (
+            <SectionWrapper>
+              <Title text="Raspored" />
 
-            <DateChooser>
-              {Object.keys(groupedTimeslots).map((date) => (
-                <DateButton
-                  key={date}
-                  isSelected={selectedDate === date}
-                  onClick={() => setSelectedDate(date)}
-                >
-                  {date}
-                </DateButton>
-              ))}
-            </DateChooser>
-
-            <TimetableWrapper>
-              {selectedDate &&
-                groupedTimeslots[selectedDate] &&
-                groupedTimeslots[selectedDate].map((timeslot) => (
-                  <StyledLink
-                    href={
-                      timeslot.isClickable && timeslot.slug?.current ? `timeslot/${timeslot.slug?.current}` : ""
-                    }
-                    key={timeslot._id}
+              <DateChooser>
+                {Object.keys(groupedTimeslots).map((date) => (
+                  <DateButton
+                    key={date}
+                    isSelected={selectedDate === date}
+                    onClick={() => setSelectedDate(date)}
                   >
-                    <TimeSlotContainer
-                      height={calculateEventHeight(
-                        timeslot.startTime,
-                        timeslot.endTime
-                      )}
-                    >
-                      <TimeLabel>
-                        {new Date(timeslot.startTime).toLocaleTimeString(
-                          "hr-HR",
-                          {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          }
-                        )}
-                      </TimeLabel>
-                      <EventLabel>{timeslot.title}</EventLabel>
-                    </TimeSlotContainer>
-                  </StyledLink>
+                    {date}
+                  </DateButton>
                 ))}
-            </TimetableWrapper>
-          </SectionWrapper>
+              </DateChooser>
+
+              <TimetableWrapper>
+                {selectedDate &&
+                  groupedTimeslots[selectedDate] &&
+                  groupedTimeslots[selectedDate].map((timeslot) => (
+                    <StyledLink
+                      href={
+                        timeslot.isClickable && timeslot.slug?.current
+                          ? `timeslot/${timeslot.slug?.current}`
+                          : ""
+                      }
+                      key={timeslot._id}
+                    >
+                      <TimeSlotContainer
+                        height={calculateEventHeight(
+                          timeslot.startTime,
+                          timeslot.endTime
+                        )}
+                      >
+                        <TimeLabel>
+                          {new Date(timeslot.startTime).toLocaleTimeString(
+                            "hr-HR",
+                            {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            }
+                          )}
+                        </TimeLabel>
+                        <EventLabel>{timeslot.title}</EventLabel>
+                      </TimeSlotContainer>
+                    </StyledLink>
+                  ))}
+              </TimetableWrapper>
+            </SectionWrapper>
+          )}
 
           <SectionWrapper>
             <Title text="Novosti" />
