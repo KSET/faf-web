@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Link } from "wouter";
-import { urlFor, formatDate } from "../../sanity";
+import { urlFor } from "../../sanity";
 
 type Props = {
   title: string;
@@ -9,7 +9,7 @@ type Props = {
   slug: string;
 };
 
-export const Album = ({ title, date, image, slug }: Props) => {
+export const Album = ({ title, image, slug }: Props) => {
   return (
     <Container href={`/gallery/${slug}`}>
       <ImageWrapper>
