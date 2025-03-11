@@ -7,30 +7,32 @@ type Props = {
   date: string;
   image: {};
   slug: string;
-  isHome?: boolean;
 };
 
-export const Blogpost = ({ title, date, image, slug, isHome }: Props) => {
+export const Album = ({ title, date, image, slug }: Props) => {
   return (
-    <Container href={`/post/${slug}`} isHome={isHome}>
-      <StyledImg src={urlFor(image)} alt={title} />
-      <Content>
+    <Container href={`/gallery/${slug}`}>
+      <ImageWrapper>
+        <StyledImg src={urlFor(image)} alt={title} />
         <Title>{title}</Title>
-        <Date>{formatDate(date)}</Date>
-      </Content>
+      </ImageWrapper>
     </Container>
   );
 };
 
-type ContainerProps = {
-  isHome?: boolean;
-};
+const ImageWrapper = styled.div`
+  position: relative;
+  width: 100%;
+`;
 
-const Container = styled(Link)<ContainerProps>`
+const StyledImg = styled.img`
+  width: 100%;
+  display: block;
+`;
+
+const Container = styled(Link)`
   background-color: white;
   width: 100%;
-  max-width: ${({ isHome }) => (isHome && "300px")};
-  flex: 0 0 auto;
   line-height: normal;
   border: 1px solid #000;
   box-shadow: 10px 10px 0px 0px #000;
@@ -43,37 +45,24 @@ const Container = styled(Link)<ContainerProps>`
     box-shadow: 5px 5px 0px -1px #000;
     transform: translateY(0.5rem) translateX(0.5rem);
   }
-
   @media (min-width: 768px) {
     width: 30%;
-    min-width: unset;
-    max-width: unset;
-    flex: 0 1 auto;
   }
 `;
 
-const StyledImg = styled.img`
-  width: 100%;
-`;
-
-const Content = styled.div`
-  color: black;
-  font-family: Montserrat;
-  padding: 0px 20px;
-`;
-
 const Title = styled.h1`
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  color: white;
+  font-family: Montserrat;
   font-style: normal;
   font-weight: 700;
   font-size: 23px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+  margin: 0;
   word-break: break-word;
   overflow-wrap: break-word;
 `;
 
-const Date = styled.p`
-  font-style: normal;
-  font-weight: 600;
-  font-size: 15px;
-`;
-
-export default Blogpost;
+export default Album;

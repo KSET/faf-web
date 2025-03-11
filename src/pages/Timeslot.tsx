@@ -5,7 +5,7 @@ import { getTimeslot } from "../sanity";
 import { useParams } from "wouter";
 import { PortableText } from "@portabletext/react";
 import { urlFor } from "../sanity";
-import { Footer, Header } from "../components";
+import { PageLayout } from "../components";
 import { Helmet } from "react-helmet";
 
 function Timeslot() {
@@ -65,47 +65,47 @@ function Timeslot() {
         />
         <meta property="og:image" content={urlFor(timeslot.mainImage, 200)} />
       </Helmet>
-      <Header />
-      <Container>
-      {loading ? ( 
-          <Spinner /> 
-        ) : (
-        <Content>
-          <Title>{timeslot.title}</Title>
-          <Time>
-            {new Date(timeslot.startTime).toLocaleString("hr-HR", {
-              weekday: "long",
-              month: "long",
-              day: "numeric",
-              hour: "2-digit",
-              minute: "2-digit",
-            })}
-          </Time>
-          <PortableText value={timeslot.body} components={ptComponents} />
+      <PageLayout>
+        <Container>
+        {loading ? ( 
+            <Spinner /> 
+          ) : (
+          <Content>
+            <Title>{timeslot.title}</Title>
+            <Time>
+              {new Date(timeslot.startTime).toLocaleString("hr-HR", {
+                weekday: "long",
+                month: "long",
+                day: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
+            </Time>
+            <PortableText value={timeslot.body} components={ptComponents} />
 
-          <MoviesContainer>
-            {timeslot.movies &&
-              timeslot.movies.map((movie: any) => (
-                <Movie key={movie._id}>
-                  <MovieImage
-                    alt={movie.title}
-                    loading="lazy"
-                    src={urlFor(movie.poster)}
-                  />
-                  <MovieContentContainer>
-                    <MovieTitle>{movie.title}</MovieTitle>
-                    <DirectorAndDuration>
-                      {movie.directorandduration}
-                    </DirectorAndDuration>
-                    <MovieDescription>{movie.description}</MovieDescription>
-                  </MovieContentContainer>
-                </Movie>
-              ))}
-          </MoviesContainer>
-        </Content>
-        )}
-      </Container>
-      <Footer />
+            <MoviesContainer>
+              {timeslot.movies &&
+                timeslot.movies.map((movie: any) => (
+                  <Movie key={movie._id}>
+                    <MovieImage
+                      alt={movie.title}
+                      loading="lazy"
+                      src={urlFor(movie.poster)}
+                    />
+                    <MovieContentContainer>
+                      <MovieTitle>{movie.title}</MovieTitle>
+                      <DirectorAndDuration>
+                        {movie.directorandduration}
+                      </DirectorAndDuration>
+                      <MovieDescription>{movie.description}</MovieDescription>
+                    </MovieContentContainer>
+                  </Movie>
+                ))}
+            </MoviesContainer>
+          </Content>
+          )}
+        </Container>
+      </PageLayout>
     </>
   );
 }
@@ -196,8 +196,8 @@ const MovieDescription = styled.p`
 `;
 
 const Spinner = styled.div`
-  border: 8px solid #FF3640;
-  border-top: 8px solid #FFC73F;
+  border: 8px solid #a7ce64;
+  border-top: 8px solid #fe7677;
   border-radius: 50%;
   width: 50px; 
   height: 50px; 

@@ -1,5 +1,6 @@
 import { createClient } from "@sanity/client";
 import imageUrlBuilder from "@sanity/image-url";
+import {getImageDimensions} from '@sanity/asset-utils'
 
 export const client = createClient({
   projectId: import.meta.env.VITE_SANITY_PROJECT_ID,
@@ -9,21 +10,29 @@ export const client = createClient({
   perspective: "published",
 });
 
+const builder = imageUrlBuilder(client)
+
 export const urlFor = (source: any, width?: number, height?: number) => {
   if (!source) return "";
 
-  const builder = imageUrlBuilder(client).image(source);
+  const image = builder.image(source);
   
   if (width) {
-    builder.width(width);
+    image.width(width);
   }
   
   if (height) {
-    builder.height(height);
+    image.height(height);
   }
 
-  return builder.url();
+  return image.url();
 };
+
+export const dimensionsFor = (source: any) => {
+  return getImageDimensions(source);
+  
+}
+
 
 export async function getFrontpagePosts() {
   const posts = await client.fetch(
@@ -46,6 +55,22 @@ export async function getPost(slug: string) {
   );
   return post[0];
 }
+
+export async function getAllGalleries() {
+  const galleries = await client.fetch(
+    '*[_type == "gallery"] | order(publishedAt desc) { _id, title, slug, publishedAt, coverImage }'
+  );
+  return galleries;
+}
+
+export async function getGallery(slug: string) {
+  const gallery = await client.fetch(
+    '*[_type == "gallery" && slug.current == $slug] { _id, title, body, publishedAt, coverImage, images }',
+    {slug}
+  );
+  return gallery[0];
+}
+
 
 export async function getAllTimeslots() {
   const timeslots = await client.fetch(

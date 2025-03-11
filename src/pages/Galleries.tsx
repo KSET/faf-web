@@ -1,15 +1,15 @@
 import "../index.css";
-import { getAllPosts } from "../sanity";
+import { getAllGalleries } from "../sanity";
 import { useEffect, useState } from "react";
-import { Blogpost, Title, PageLayout } from "../components";
+import { Album, Title, PageLayout } from "../components";
 import styled from "styled-components";
 
 function Posts() {
-  const [posts, setPosts] = useState([]);
+  const [galleries, setGalleries] = useState([]);
 
   useEffect(() => {
-    getAllPosts().then((posts) => {
-      setPosts(posts);
+    getAllGalleries().then((galleries) => {
+      setGalleries(galleries);
     });
   }, []);
 
@@ -17,16 +17,16 @@ function Posts() {
     <PageLayout>
       <Container>
         <ContentContainer>
-          <Title text="Novosti" />
+          <Title text="Galerija" />
             <PostsWrapper>
-              {posts.length > 0 &&
-                posts.map((post: any) => (
-                  <Blogpost
-                    slug={post.slug.current}
-                    key={post._id}
-                    title={post.title}
-                    date={post.publishedAt}
-                    image={post.mainImage}
+              {galleries.length > 0 &&
+                galleries.map((gallery: any) => (
+                  <Album
+                    slug={gallery.slug.current}
+                    key={gallery._id}
+                    title={gallery.title}
+                    date={gallery.publishedAt}
+                    image={gallery.coverImage}
                   />
                 ))}
             </PostsWrapper>

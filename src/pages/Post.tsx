@@ -5,7 +5,7 @@ import { formatDate, getPost } from "../sanity";
 import { useParams } from "wouter";
 import { PortableText } from "@portabletext/react";
 import { urlFor } from "../sanity";
-import { Footer, Header } from "../components";
+import { PageLayout } from "../components";
 import { Helmet } from "react-helmet";
 
 function Post() {
@@ -57,15 +57,15 @@ function Post() {
           content={urlFor(post.mainImage)}
         />
       </Helmet>
-      <Header />
-      <Container>
-        <Content>
-          <Title>{post.title}</Title>
-          <PublishedAt>Objavljeno {formatDate(post.publishedAt)}</PublishedAt>
-          <PortableText value={post.body} components={ptComponents} />
-        </Content>
-      </Container>
-      <Footer />
+      <PageLayout>
+        <Container>
+          <Content>
+            <Title>{post.title}</Title>
+            <PublishedAt>Objavljeno {formatDate(post.publishedAt)}</PublishedAt>
+            <PortableText value={post.body} components={ptComponents} />
+          </Content>
+        </Container>
+      </PageLayout>
     </>
   );
 }

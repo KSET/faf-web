@@ -23,7 +23,7 @@ export const Button = ({ text, color = "red", link }: Props) => {
 const StyledButton = styled(AutoLink)<{ color: string }>`
   width: fit-content;
   background-color: ${(props) =>
-    props.color === "red" ? "#FF3640" : "#FFC73F"};
+    props.color === "red" ? "#a7ce64" : "#fe7677"};
   color: ${(props) => (props.color === "red" ? "#fff" : "#000")};
   border: 2px solid #000;
   box-shadow: 8px 10px 0px -2px #000;

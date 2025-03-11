@@ -1,9 +1,17 @@
 import { useEffect, useState } from "react";
-import { Button, Blobs, Title, Blogpost, Logo, Footer } from "../components";
+import {
+  Button,
+  BlobBackground,
+  Title,
+  Blogpost,
+  Logo,
+  PageLayout,
+} from "../components";
 import styled from "styled-components";
 import "../index.css";
 import { getAllTimeslots, getFrontpagePosts } from "../sanity";
 import { Link } from "wouter";
+import React from "react";
 
 interface Timeslot {
   _id: string;
@@ -67,6 +75,7 @@ const App = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [timeslots, setTimeslots] = useState<Timeslot[]>([]);
   const [selectedDate, setSelectedDate] = useState<string>("");
+  const postsWrapperRef = React.useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     getFrontpagePosts().then((posts) => {
@@ -78,6 +87,26 @@ const App = () => {
       setSelectedDate("subota");
     });
   }, []);
+
+
+  const scrollPostsLeft = () => {
+    if (postsWrapperRef.current) {
+      postsWrapperRef.current.scrollBy({
+        left: -300,
+        behavior: "smooth",
+      });
+    }
+  };
+
+
+  const scrollPostsRight = () => {
+    if (postsWrapperRef.current) {
+      postsWrapperRef.current.scrollBy({
+        left: 300,
+        behavior: "smooth",
+      });
+    }
+  };
 
   const groupedTimeslots = groupByDate(timeslots);
 
@@ -112,127 +141,146 @@ const App = () => {
   }, []);
 
   return (
-    <>
-      <Blobs />
-      <HeroContainer>
-        <Logo eyePosition={eyePosition} />
-        <TitleContainer>
-          <FirstLine>Festival amaterskog</FirstLine>
-          <SecondLine>filma</SecondLine>
-        </TitleContainer>
+    <PageLayout useBackgroundForFooter={false} isHomePage={true}>
+        <HeroSection>
+          <BlobBackground />
+          <HeroContainer>
+            <Logo eyePosition={eyePosition} />
+            <TitleContainer>
+              <FirstLine>Festival amaterskog</FirstLine>
+              <SecondLine>filma</SecondLine>
+            </TitleContainer>
 
-        <DateLocationContainer>
-          <Location>KLUB MOČVARA</Location>
-          <StyledDate>18. - 19. 10. 2025.</StyledDate>
-        </DateLocationContainer>
-      </HeroContainer>
+            <DateLocationContainer>
+              <Location>KLUB MOČVARA</Location>
+              <StyledDate>18. - 19. 10. 2025.</StyledDate>
+            </DateLocationContainer>
+          </HeroContainer>
+        </HeroSection>
 
-      <ContentContainer>
-        <ContentWrapper>
-          <SectionWrapper>
-            <Title text="O FAF-u" />
-            <Text>
-              Festival Amaterskog Filma - za prijatelje FAF, festival je u
-              organizaciji studenata koji svoju ljubav prema amaterskom filmu
-              žele proširiti po cijelom svijetu. <br />
-              <br /> Cijeli svijet je daleko...a Zagreb imamo kod kuće pa nam se
-              u potrazi za najboljim (amaterskim) filmovima regije možeš
-              pridružiti u Klubu Močvara 18. i 19. listopada 2025. <br />
-              <br />
-              Gledamo se uskoro...
-            </Text>
-          </SectionWrapper>
-
-          {timeslots.length > 0 && (
+        <ContentSection>
+          <ContentWrapper>
             <SectionWrapper>
-              <Title text="Raspored" />
-
-              <DateChooser>
-                {Object.keys(groupedTimeslots).map((date) => (
-                  <DateButton
-                    key={date}
-                    isSelected={selectedDate === date}
-                    onClick={() => setSelectedDate(date)}
-                  >
-                    {date}
-                  </DateButton>
-                ))}
-              </DateChooser>
-
-              <TimetableWrapper>
-                {selectedDate &&
-                  groupedTimeslots[selectedDate] &&
-                  groupedTimeslots[selectedDate].map((timeslot) => (
-                    <StyledLink
-                      href={
-                        timeslot.isClickable && timeslot.slug?.current
-                          ? `timeslot/${timeslot.slug?.current}`
-                          : ""
-                      }
-                      key={timeslot._id}
-                    >
-                      <TimeSlotContainer
-                        height={calculateEventHeight(
-                          timeslot.startTime,
-                          timeslot.endTime
-                        )}
-                      >
-                        <TimeLabel>
-                          {new Date(timeslot.startTime).toLocaleTimeString(
-                            "hr-HR",
-                            {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            }
-                          )}
-                        </TimeLabel>
-                        <EventLabel>{timeslot.title}</EventLabel>
-                      </TimeSlotContainer>
-                    </StyledLink>
-                  ))}
-              </TimetableWrapper>
+              <Title text="O FAF-u" />
+              <Text>
+                Festival Amaterskog Filma - za prijatelje FAF, festival je u
+                organizaciji studenata koji svoju ljubav prema amaterskom filmu
+                žele proširiti po cijelom svijetu. <br />
+                <br /> Cijeli svijet je daleko...a Zagreb imamo kod kuće pa nam
+                se u potrazi za najboljim (amaterskim) filmovima regije možeš
+                pridružiti u Klubu Močvara 18. i 19. listopada 2025. <br />
+                <br />
+                Gledamo se uskoro...
+              </Text>
             </SectionWrapper>
-          )}
 
-          <SectionWrapper>
-            <Title text="Novosti" />
-            <PostsWrapper>
-              {posts.length > 0 &&
-                posts.map((post) => (
-                  <Blogpost
-                    slug={post.slug.current}
-                    key={post._id}
-                    title={post.title}
-                    date={post.publishedAt}
-                    image={post.mainImage}
-                  />
-                ))}
-            </PostsWrapper>
-            <ButtonWrapper>
-              <Button text="pročitaj sve" color="orange" link="/posts" />
-            </ButtonWrapper>
-          </SectionWrapper>
-        </ContentWrapper>
-      </ContentContainer>
+            {timeslots.length > 0 && (
+              <SectionWrapper>
+                <Title text="Raspored" />
 
-      <Footer useBackground={false} />
-    </>
+                <DateChooser>
+                  {Object.keys(groupedTimeslots).map((date) => (
+                    <DateButton
+                      key={date}
+                      isSelected={selectedDate === date}
+                      onClick={() => setSelectedDate(date)}
+                    >
+                      {date}
+                    </DateButton>
+                  ))}
+                </DateChooser>
+
+                <TimetableWrapper>
+                  {selectedDate &&
+                    groupedTimeslots[selectedDate] &&
+                    groupedTimeslots[selectedDate].map((timeslot) => (
+                      <StyledLink
+                        href={
+                          timeslot.isClickable && timeslot.slug?.current
+                            ? `timeslot/${timeslot.slug?.current}`
+                            : ""
+                        }
+                        key={timeslot._id}
+                      >
+                        <TimeSlotContainer
+                          height={calculateEventHeight(
+                            timeslot.startTime,
+                            timeslot.endTime
+                          )}
+                        >
+                          <TimeLabel>
+                            {new Date(timeslot.startTime).toLocaleTimeString(
+                              "hr-HR",
+                              {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              }
+                            )}
+                          </TimeLabel>
+                          <EventLabel>{timeslot.title}</EventLabel>
+                        </TimeSlotContainer>
+                      </StyledLink>
+                    ))}
+                </TimetableWrapper>
+              </SectionWrapper>
+            )}
+
+            <NewsSectionWrapper>
+              <TitleWithScrollIndicator>
+                <Title text="Novosti" />
+                <ScrollIndicators>
+                  <ScrollArrow onClick={scrollPostsLeft}>←</ScrollArrow>
+                  <ScrollArrow onClick={scrollPostsRight}>→</ScrollArrow>
+                </ScrollIndicators>
+              </TitleWithScrollIndicator>
+              <PostsWrapper ref={postsWrapperRef}>
+                {posts.length > 0 &&
+                  posts.map((post) => (
+                    <Blogpost
+                      slug={post.slug.current}
+                      key={post._id}
+                      title={post.title}
+                      date={post.publishedAt}
+                      image={post.mainImage}
+                      isHome={true}
+                    />
+                  ))}
+              </PostsWrapper>
+              <ButtonWrapper>
+                <Button text="pročitaj sve" color="orange" link="/posts" />
+              </ButtonWrapper>
+            </NewsSectionWrapper>
+          </ContentWrapper>
+        </ContentSection>
+    </PageLayout>
   );
 };
 
+const HeroSection = styled.div`
+  position: relative;
+  height: 90vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;
+
+const ContentSection = styled.div`
+  position: relative;
+  width: 100%;
+  padding-top: 80px;
+  z-index: 10;
+`;
+
 const HeroContainer = styled.div`
   display: flex;
+  width: 100%;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   padding-top: 200px;
   padding-bottom: 100px;
-`;
-
-const ContentContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
 `;
 
 const ContentWrapper = styled.div`
@@ -251,16 +299,45 @@ const SectionWrapper = styled.div`
   gap: 1rem;
 `;
 
+const NewsSectionWrapper = styled.div`
+  width: 100%;
+  max-width: 768px;
+  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+`;
+
 const PostsWrapper = styled.div`
   display: flex;
   gap: 1rem;
   width: 100%;
-  flex-wrap: wrap;
-  flex-direction: column;
   margin-bottom: 1rem;
+  overflow-x: auto;
+  flex-wrap: nowrap;
+  flex-direction: row;
+  padding: 0.5rem 0.5rem 1rem 0;
+  box-sizing: border-box;
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+  scrollbar-width: thin; /* For Firefox */
+  scroll-behavior: smooth; 
+
+  & > *:first-child {
+    margin-left: 0.5rem;
+  }
+
+  & > *:last-child {
+    margin-right: 0.5rem;
+  }
 
   @media (min-width: 768px) {
-    flex-direction: row;
+    flex-wrap: wrap;
+    overflow-x: visible;
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 0;
+    padding-right: 0;
   }
 `;
 
@@ -302,6 +379,53 @@ const DateLocationContainer = styled.div`
 
   @media (min-width: 768px) {
     font-size: 20px;
+  }
+`;
+
+const TitleWithScrollIndicator = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 85%;
+
+  @media (min-width: 768px) {
+    width: 100%;
+
+    & > div:last-child {
+      display: none;
+    }
+  }
+`;
+
+const ScrollIndicators = styled.div`
+  display: flex;
+  gap: 0.5rem;
+`;
+
+const ScrollArrow = styled.div`
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #000;
+  width: 2.2rem;
+  height: 2.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f0f0f0;
+  border: 1px solid #000;
+  border-radius: 50%;
+  box-shadow: 3px 3px 0px 0px #000;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.2s ease;
+
+  &:active {
+    transform: translateY(2px) translateX(2px);
+    box-shadow: 1px 1px 0px 0px #000;
+  }
+
+  &:hover {
+    background-color: #e8e8e8;
   }
 `;
 
@@ -348,7 +472,7 @@ const StyledLink = styled(Link)`
 const DateButton = styled.div<{ isSelected: boolean }>`
   flex-grow: 1;
   text-align: center;
-  background-color: ${(props) => (props.isSelected ? "#FF3640" : "#FFC73F")};
+  background-color: ${(props) => (props.isSelected ? "#a7ce64" : "#fe7677")};
   color: ${(props) => (props.isSelected ? "#fff" : "#000")};
   border: 2px solid #000;
   box-shadow: 8px 10px 0px -2px #000;

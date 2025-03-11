@@ -3,7 +3,9 @@ import ReactDOM from "react-dom/client";
 import { Route, Switch, useLocation } from "wouter";
 import App from "./pages/App.tsx";
 import Posts from "./pages/Posts.tsx";
+import Galleries from "./pages/Galleries.tsx";
 import Post from "./pages/Post.tsx";
+import Gallery from "./pages/Gallery.tsx";
 import { Helmet } from "react-helmet";
 import Timeslot from "./pages/Timeslot.tsx";
 
@@ -53,6 +55,10 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
       <Route path="/post/:slug" component={Post} />
 
       <Route path="/timeslot/:slug" component={Timeslot} />
+
+      <Route path="/galleries" component={Galleries} />
+
+      <Route path="/gallery/:slug" component={Gallery} />
       
       <Route path="/prijave">
         {() => {

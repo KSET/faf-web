@@ -56,7 +56,7 @@ export const Footer = ({ useBackground = true }: Props) => {
 
 const Container = styled.div<{ useBackground: boolean }>`
   background-color: ${(props) =>
-    props.useBackground ? "#FFC73F" : "transparent"};
+    props.useBackground ? "#fe7677" : "transparent"};
   text-align: center;
   font-family: "Montserrat";
   font-weight: 600;
@@ -67,10 +67,11 @@ const Container = styled.div<{ useBackground: boolean }>`
   align-items: center;
   flex-direction: column;
   padding-bottom: 30px;
+
 `;
 
 const StyledLogo = styled.img`
-  height: 100px;
+  height: 50px;
   margin: 30px 0 15px;
 `;
 
@@ -87,8 +88,8 @@ const Links = styled.div`
 
   a {
     color: #000;
-    font-size: 1.5rem;
-    font-weight: 800;
+    font-size: 1rem;
+    font-weight: 600;
   }
 `;
 
@@ -101,5 +102,5 @@ const Logos = styled.div`
 `;
 
 const LogoSVG = styled.img`
-  height: 50px;
+  height: 30px;
 `;
