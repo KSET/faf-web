@@ -19,24 +19,17 @@ const ScrollToTop = () => {
   return null;
 };
 
-
-
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <Helmet>
-      <title>
-        Festival amaterskog filma
-      </title>
+      <title>Festival amaterskog filma</title>
       <meta
         name="description"
         content="FAF ilitiga Festival Amaterskog Filma, festival je u organizaciji studenata volontera koji svoju ljubav prema filmu žele dijeliti s drugim filmskim entuzijastima."
       />
 
       <meta property="og:type" content="website" />
-      <meta
-        property="og:title"
-        content="Festival amaterskog filma - FAF"
-      />
+      <meta property="og:title" content="Festival amaterskog filma - FAF" />
       <meta
         property="og:description"
         content="FAF ilitiga Festival Amaterskog Filma, festival je u organizaciji studenata volontera koji svoju ljubav prema filmu žele dijeliti s drugim filmskim entuzijastima."
@@ -56,13 +49,21 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
 
       <Route path="/timeslot/:slug" component={Timeslot} />
 
-      <Route path="/galleries" component={Galleries} />
+      <Route path="/galerije" component={Galleries} />
 
-      <Route path="/gallery/:slug" component={Gallery} />
-      
+      <Route path="/galerija/:slug" component={Gallery} />
+
       <Route path="/prijave">
         {() => {
           window.location.href = import.meta.env.VITE_APPLICATION_FORM_URL;
+          return null;
+        }}
+      </Route>
+
+      {/* Redirects for old routes */}
+      <Route path="/galleries">
+        {() => {
+          window.location.replace("/galerije");
           return null;
         }}
       </Route>

@@ -60,8 +60,8 @@ export const Header = ({ isHome = false }: HeaderProps) => {
                   Novosti
                 </NavLink>
                 <NavLink
-                  href="/galleries"
-                  isActive={location === "/galleries" || location.startsWith("/gallery/")}
+                  href="/galerije"
+                  isActive={location === "/galerije" || location.startsWith("/galerija/")}
                 >
                   Galerija
                 </NavLink>
@@ -89,8 +89,8 @@ export const Header = ({ isHome = false }: HeaderProps) => {
               Novosti
             </NavLink>
             <NavLink
-              href="/galleries"
-              isActive={location === "/galleries" || location.startsWith("/gallery/")}
+              href="/galerije"
+              isActive={location === "/galerije" || location.startsWith("/galerija/")}
               onClick={closeMenu}
             >
               Galerija
@@ -117,8 +117,8 @@ export const Header = ({ isHome = false }: HeaderProps) => {
                   Novosti
                 </NavLink>
                 <NavLink
-                  href="/galleries"
-                  isActive={location === "/galleries" || location.startsWith("/gallery/")}
+                  href="/galerije"
+                  isActive={location === "/galerije" || location.startsWith("/galerija/")}
                 >
                   Galerija
                 </NavLink>
@@ -146,9 +146,9 @@ export const Header = ({ isHome = false }: HeaderProps) => {
               Novosti
             </NavLink>
             <NavLink
-              href="/galleries"
+              href="/galerije"
               isActive={
-                location === "/galleries" || location.startsWith("/gallery/")
+                location === "/galerije" || location.startsWith("/galerija/")
               }
               onClick={closeMenu}
             >

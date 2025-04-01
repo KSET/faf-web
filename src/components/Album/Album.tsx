@@ -11,7 +11,7 @@ type Props = {
 
 export const Album = ({ title, image, slug }: Props) => {
   return (
-    <Container href={`/gallery/${slug}`}>
+    <Container href={`/galerija/${slug}`}>
       <ImageWrapper>
         <StyledImg src={urlFor(image)} alt={title} />
         <Title>{title}</Title>
@@ -23,11 +23,15 @@ export const Album = ({ title, image, slug }: Props) => {
 const ImageWrapper = styled.div`
   position: relative;
   width: 100%;
+  aspect-ratio: 16/9;
+  overflow: hidden;
 `;
 
 const StyledImg = styled.img`
   width: 100%;
+  height: 100%;
   display: block;
+  object-fit: cover;
 `;
 
 const Container = styled(Link)`
