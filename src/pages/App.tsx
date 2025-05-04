@@ -155,6 +155,10 @@ const App = () => {
               <Location>KLUB MOČVARA</Location>
               <StyledDate>18. - 19. 10. 2025.</StyledDate>
             </DateLocationContainer>
+            
+            <ButtonWrapper>
+              <Button text="prijavi film" color="orange" link="/prijave" bold/>
+            </ButtonWrapper>
           </HeroContainer>
         </HeroSection>
 

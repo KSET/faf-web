@@ -5,6 +5,7 @@ type Props = {
   text: string;
   color?: "red" | "orange";
   link: string;
+  bold?: boolean;
 };
 
 const AutoLink = ({ href, ...rest }: any) => {
@@ -12,15 +13,15 @@ const AutoLink = ({ href, ...rest }: any) => {
   return <LinkComponent href={href} {...rest} />;
 };
 
-export const Button = ({ text, color = "red", link }: Props) => {
+export const Button = ({ text, color = "red", link, bold }: Props) => {
   return (
-    <StyledButton color={color} href={link}>
+    <StyledButton color={color} href={link} bold={bold}>
       {text}
     </StyledButton>
   );
 };
 
-const StyledButton = styled(AutoLink)<{ color: string }>`
+const StyledButton = styled(AutoLink)<{ color: string, bold?: boolean }>`
   width: fit-content;
   background-color: ${(props) =>
     props.color === "red" ? "#a7ce64" : "#fe7677"};
@@ -32,7 +33,7 @@ const StyledButton = styled(AutoLink)<{ color: string }>`
   padding: 1rem 2rem;
   transition: 0.3s;
   margin-top: 2rem;
-  font-weight: 600;
+  font-weight: ${(props) => (props.bold ? 800 : 600)};
   font-variant: all-small-caps;
   cursor: pointer;
   text-decoration: none;

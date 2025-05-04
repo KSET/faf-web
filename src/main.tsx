@@ -55,7 +55,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
 
       <Route path="/prijave">
         {() => {
-          window.location.href = import.meta.env.VITE_APPLICATION_FORM_URL;
+          window.location.replace(import.meta.env.VITE_APPLICATION_FORM_URL);
           return null;
         }}
       </Route>
