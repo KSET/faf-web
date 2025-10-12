@@ -47,15 +47,15 @@ function Post() {
           name="description"
           content="FAF ilitiga Festival Amaterskog Filma, festival je u organizaciji studenata volontera koji svoju ljubav prema filmu žele dijeliti s drugim filmskim entuzijastima."
         />
-        <meta property="og:title" content={`${post.title} - Festival amaterskog filma`} />
+        <meta
+          property="og:title"
+          content={`${post.title} - Festival amaterskog filma`}
+        />
         <meta
           property="og:description"
           content="FAF ilitiga Festival Amaterskog Filma, festival je u organizaciji studenata volontera koji svoju ljubav prema filmu žele dijeliti s drugim filmskim entuzijastima."
         />
-        <meta
-          property="og:image"
-          content={urlFor(post.mainImage)}
-        />
+        <meta property="og:image" content={urlFor(post.mainImage)} />
       </Helmet>
       <PageLayout>
         <Container>
@@ -82,11 +82,15 @@ export const Container = styled.div`
 `;
 
 const Image = styled.img`
-  max-width: 100%;
+  width: 100%;
+
+  @media (min-width: 768px) {
+    width: 50%;
+  }
 `;
 
 export const Content = styled.div`
-  margin-top:20px;
+  margin-top: 20px;
   width: 85%;
   max-width: 1024px;
   font-family: "Montserrat";
