@@ -37,9 +37,9 @@ const groupByDate = (timeslots: Timeslot[]) => {
 
       const formattedDate = startDate.toISOString().split("T")[0];
 
-      const petakDate = "2024-10-11";
+      const subotaDate = "2025-10-18";
 
-      const dateLabel = formattedDate === petakDate ? "petak" : "subota";
+      const dateLabel = formattedDate === subotaDate ? "subota" : "nedjelja";
 
       if (!acc[dateLabel]) {
         acc[dateLabel] = [];
@@ -82,18 +82,24 @@ const App = () => {
       setPosts(posts);
     });
 
-    getAllTimeslots().then((timeslots) => {
+    getAllTimeslots().then(timeslots => {
       setTimeslots(timeslots);
-      setSelectedDate("subota");
+      
+      const date = new Date();
+      const isOct19 = date.getFullYear() === 2025 && 
+                     date.getMonth() === 9 && 
+                     date.getDate() === 19;
+      
+      setSelectedDate(isOct19 ? "nedjelja" : "subota");
     });
-  }, []);
+    }, []);
 
 
-  const scrollPostsLeft = () => {
+    const scrollPostsLeft = () => {
     if (postsWrapperRef.current) {
       postsWrapperRef.current.scrollBy({
-        left: -300,
-        behavior: "smooth",
+      left: -300,
+      behavior: "smooth",
       });
     }
   };
