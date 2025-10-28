@@ -162,9 +162,9 @@ const App = () => {
               <StyledDate>18. - 19. 10. 2025.</StyledDate>
             </DateLocationContainer>
             
-            <ButtonWrapper>
+            {/* <ButtonWrapper>
               <Button text="prijavi film" color="orange" link="/prijave" bold/>
-            </ButtonWrapper>
+            </ButtonWrapper> */}
           </HeroContainer>
         </HeroSection>
 
