@@ -10,7 +10,7 @@ opacity: 0.9;
   top: 0;
   left: 0;
   width: 100%;
-  height: 90vh; 
+  height: 100%; 
   overflow: hidden;
   background-color: #fdba74;
   display: flex;
