@@ -116,35 +116,60 @@ const App = () => {
 
   const groupedTimeslots = groupByDate(timeslots);
 
-  useEffect(() => {
-    const handleMouseMove = (event: { clientX: number; clientY: number }) => {
-      const svg = document.getElementById("eye");
-      const rect = svg ? svg.getBoundingClientRect() : null;
-      const svgX = event.clientX - (rect?.left || 0);
-      const svgY = event.clientY - (rect?.bottom || 0);
+  const mouseRef = React.useRef({ x: 0, y: 0 });
+  const rafRef = React.useRef<number | null>(null);
 
-      const eyeCenterX = 194.714;
-      const eyeCenterY = 42.3506;
-      const maxEyeMovement = 5;
+  useEffect(() => {
+    const eyeCenterX = 194.714;
+    const eyeCenterY = 42.3506;
+    const maxEyeMovement = 5;
+    const smoothing = 0.2;
+
+    const handleMouseMove = (event: MouseEvent) => {
+      mouseRef.current.x = event.clientX;
+      mouseRef.current.y = event.clientY;
+    };
+
+    const updateEye = () => {
+      const svg = document.getElementById("eye");
+      const rect = svg?.getBoundingClientRect();
+      if (!rect) {
+        rafRef.current = requestAnimationFrame(updateEye);
+        return;
+      }
+
+      const svgX = mouseRef.current.x - rect.left;
+      const svgY = mouseRef.current.y - rect.top;
 
       const deltaX = svgX - eyeCenterX;
       const deltaY = svgY - eyeCenterY;
-      const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+      const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY) || 1;
 
       const clampedDistance = Math.min(distance, maxEyeMovement);
 
-      const newEyeX = eyeCenterX + (deltaX / distance) * clampedDistance;
-      const newEyeY = eyeCenterY + (deltaY / distance) * clampedDistance;
+      const targetX =
+        eyeCenterX + (deltaX / distance) * clampedDistance;
+      const targetY =
+        eyeCenterY + (deltaY / distance) * clampedDistance;
 
-      setEyePosition({ cx: newEyeX, cy: newEyeY });
+      setEyePosition((prev: { cx: number; cy: number }) => ({
+        cx: prev.cx + (targetX - prev.cx) * smoothing,
+        cy: prev.cy + (targetY - prev.cy) * smoothing,
+      }));
+
+      rafRef.current = requestAnimationFrame(updateEye);
     };
 
     document.addEventListener("mousemove", handleMouseMove);
+    rafRef.current = requestAnimationFrame(updateEye);
 
     return () => {
       document.removeEventListener("mousemove", handleMouseMove);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
   }, []);
+
+
 
   return (
     <PageLayout useBackgroundForFooter={false} isHomePage={true}>
