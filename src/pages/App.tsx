@@ -444,9 +444,9 @@ const Location = styled.div`
   font-weight: 900;
 `;
 
-const StyledDate = styled.div`
-  font-weight: 600;
-`;
+//const StyledDate = styled.div`
+//  font-weight: 600;
+//`;
 
 const Text = styled.div`
   font-family: "Montserrat";
