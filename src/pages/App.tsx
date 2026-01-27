@@ -131,20 +131,28 @@ const App = () => {
     };
 
     const updateEye = () => {
-      const svg = document.getElementById("eye");
-      const rect = svg?.getBoundingClientRect();
-      if (!rect) {
+      const svg = document.getElementById("eye") as SVGSVGElement | null;
+      if (!svg) {
         rafRef.current = requestAnimationFrame(updateEye);
         return;
       }
 
-      const svgX = mouseRef.current.x - rect.left;
-      const svgY = mouseRef.current.y - rect.top;
+      const ctm = svg.getScreenCTM();
+      if (!ctm) {
+        rafRef.current = requestAnimationFrame(updateEye);
+        return;
+      }
 
-      const deltaX = svgX - eyeCenterX;
-      const deltaY = svgY - eyeCenterY;
-      const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY) || 1;
+      const point = svg.createSVGPoint();
+      point.x = mouseRef.current.x;
+      point.y = mouseRef.current.y;
 
+      const svgPoint = point.matrixTransform(ctm.inverse());
+
+      const deltaX = svgPoint.x - eyeCenterX;
+      const deltaY = svgPoint.y - eyeCenterY;
+
+      const distance = Math.hypot(deltaX, deltaY) || 1;
       const clampedDistance = Math.min(distance, maxEyeMovement);
 
       const targetX =
@@ -152,7 +160,7 @@ const App = () => {
       const targetY =
         eyeCenterY + (deltaY / distance) * clampedDistance;
 
-      setEyePosition((prev: { cx: number; cy: number }) => ({
+      setEyePosition((prev) => ({
         cx: prev.cx + (targetX - prev.cx) * smoothing,
         cy: prev.cy + (targetY - prev.cy) * smoothing,
       }));
@@ -168,6 +176,8 @@ const App = () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
   }, []);
+
+
 
 
 
