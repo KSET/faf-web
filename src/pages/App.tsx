@@ -116,70 +116,35 @@ const App = () => {
 
   const groupedTimeslots = groupByDate(timeslots);
 
-  const mouseRef = React.useRef({ x: 0, y: 0 });
-  const rafRef = React.useRef<number | null>(null);
-
   useEffect(() => {
-    const eyeCenterX = 112.409;
-    const eyeCenterY = 204.988;
-    const maxEyeMovement = 5;
-    const smoothing = 0.2;
+    const handleMouseMove = (event: { clientX: number; clientY: number }) => {
+      const svg = document.getElementById("eye");
+      const rect = svg ? svg.getBoundingClientRect() : null;
+      const svgX = event.clientX - (rect?.left || 0);
+      const svgY = event.clientY - (rect?.bottom || 0);
 
-    const handleMouseMove = (event: MouseEvent) => {
-      mouseRef.current.x = event.clientX;
-      mouseRef.current.y = event.clientY;
-    };
+      const eyeCenterX = 194.714;
+      const eyeCenterY = 42.3506;
+      const maxEyeMovement = 5;
 
-    const updateEye = () => {
-      const svg = document.getElementById("eye") as SVGSVGElement | null;
-      if (!svg) {
-        rafRef.current = requestAnimationFrame(updateEye);
-        return;
-      }
+      const deltaX = svgX - eyeCenterX;
+      const deltaY = svgY - eyeCenterY;
+      const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
 
-      const ctm = svg.getScreenCTM();
-      if (!ctm) {
-        rafRef.current = requestAnimationFrame(updateEye);
-        return;
-      }
-
-      const point = svg.createSVGPoint();
-      point.x = mouseRef.current.x;
-      point.y = mouseRef.current.y;
-
-      const svgPoint = point.matrixTransform(ctm.inverse());
-
-      const deltaX = svgPoint.x - eyeCenterX;
-      const deltaY = svgPoint.y - eyeCenterY;
-
-      const distance = Math.hypot(deltaX, deltaY) || 1;
       const clampedDistance = Math.min(distance, maxEyeMovement);
 
-      const targetX =
-        eyeCenterX + (deltaX / distance) * clampedDistance;
-      const targetY =
-        eyeCenterY + (deltaY / distance) * clampedDistance;
+      const newEyeX = eyeCenterX + (deltaX / distance) * clampedDistance;
+      const newEyeY = eyeCenterY + (deltaY / distance) * clampedDistance;
 
-      setEyePosition((prev) => ({
-        cx: prev.cx + (targetX - prev.cx) * smoothing,
-        cy: prev.cy + (targetY - prev.cy) * smoothing,
-      }));
-
-      rafRef.current = requestAnimationFrame(updateEye);
+      setEyePosition({ cx: newEyeX, cy: newEyeY });
     };
 
     document.addEventListener("mousemove", handleMouseMove);
-    rafRef.current = requestAnimationFrame(updateEye);
 
     return () => {
       document.removeEventListener("mousemove", handleMouseMove);
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
   }, []);
-
-
-
-
 
   return (
     <PageLayout useBackgroundForFooter={false} isHomePage={true}>
