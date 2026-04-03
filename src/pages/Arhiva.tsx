@@ -1,14 +1,14 @@
 import "../index.css";
-import { getCurrentYearPosts } from "../sanity";
+import { getAllPosts } from "../sanity";
 import { useEffect, useState } from "react";
 import { Blogpost, Title, PageLayout } from "../components";
 import styled from "styled-components";
 
-function Posts() {
+function Arhiva() {
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
-    getCurrentYearPosts().then((posts) => {
+    getAllPosts().then((posts) => {
       setPosts(posts);
     });
   }, []);
@@ -17,7 +17,7 @@ function Posts() {
     <PageLayout>
       <Container>
         <ContentContainer>
-          <Title text="Novosti" />
+          <Title text="Arhiva" />
             <PostsWrapper>
               {posts.length > 0 &&
                 posts.map((post: any) => (
@@ -30,7 +30,7 @@ function Posts() {
                   />
                 ))}
               {posts.length === 0 && (
-                <NoPostsMessage>Nema novih novosti, pogledajte kasnije</NoPostsMessage>
+                <NoPostsMessage>Nema starih postova</NoPostsMessage>
               )}
             </PostsWrapper>
         </ContentContainer>
@@ -46,7 +46,7 @@ const Container = styled.div`
 `;
 
 const ContentContainer = styled.div`
-  margin-top:20px;
+  margin-top: 20px;
   display: flex;
   flex-direction: column;
   width: 85%;
@@ -54,7 +54,7 @@ const ContentContainer = styled.div`
 `;
 
 const PostsWrapper = styled.div`
-margin-top: 1rem;
+  margin-top: 1rem;
   display: flex;
   gap: 2rem;
   flex-wrap: wrap;
@@ -73,10 +73,8 @@ margin-top: 1rem;
 
 const NoPostsMessage = styled.div`
   text-align: center;
+  color: #666;
   padding: 2rem;
-  width: 100%;
-  font-family: "Montserrat";
-  font-size: 18px;
 `;
 
-export default Posts;
+export default Arhiva;

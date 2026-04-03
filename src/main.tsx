@@ -8,6 +8,7 @@ import Post from "./pages/Post.tsx";
 import Gallery from "./pages/Gallery.tsx";
 import { Helmet } from "react-helmet";
 import Timeslot from "./pages/Timeslot.tsx";
+import Arhiva from "./pages/Arhiva.tsx";
 
 const ScrollToTop = () => {
   const [pathname] = useLocation();
@@ -44,6 +45,8 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
       <Route path="/" component={App} />
 
       <Route path="/posts" component={Posts} />
+
+      <Route path="/arhiva" component={Arhiva} />
 
       <Route path="/post/:slug" component={Post} />
 

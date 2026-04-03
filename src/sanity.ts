@@ -35,8 +35,19 @@ export const dimensionsFor = (source: any) => {
 
 
 export async function getFrontpagePosts() {
+  const currentYear = new Date().getFullYear();
   const posts = await client.fetch(
-    '*[_type == "post" && publishedAt < now()] | order(publishedAt desc) { _id, title, slug, mainImage, publishedAt } [0...3]'
+    '*[_type == "post" && publishedAt < now() && year(publishedAt) == $year] | order(publishedAt desc) { _id, title, slug, mainImage, publishedAt } [0...3]',
+    { year: currentYear }
+  );
+  return posts;
+}
+
+export async function getCurrentYearPosts() {
+  const currentYear = new Date().getFullYear();
+  const posts = await client.fetch(
+    '*[_type == "post" && publishedAt < now() && year(publishedAt) == $year] | order(publishedAt desc) { _id, title, slug, mainImage, publishedAt }',
+    { year: currentYear }
   );
   return posts;
 }
@@ -44,6 +55,15 @@ export async function getFrontpagePosts() {
 export async function getAllPosts() {
   const posts = await client.fetch(
     '*[_type == "post" && publishedAt < now()] | order(publishedAt desc) { _id, title, slug, mainImage, publishedAt }'
+  );
+  return posts;
+}
+
+export async function getArchivePosts() {
+  const currentYear = new Date().getFullYear();
+  const posts = await client.fetch(
+    '*[_type == "post" && publishedAt < now() && year(publishedAt) < $year] | order(publishedAt desc) { _id, title, slug, mainImage, publishedAt }',
+    { year: currentYear }
   );
   return posts;
 }

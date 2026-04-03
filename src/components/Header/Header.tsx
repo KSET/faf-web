@@ -65,6 +65,13 @@ export const Header = ({ isHome = false }: HeaderProps) => {
                 >
                   Galerija
                 </NavLink>
+              <NavLink
+              href="/arhiva"
+              isActive={location === "/arhiva" || location.startsWith("/arhiva/")}
+              onClick={closeMenu}
+            >
+              Arhiva
+            </NavLink>
               </DesktopNav>
 
               <HamburgerButton onClick={toggleMenu}>
@@ -95,6 +102,13 @@ export const Header = ({ isHome = false }: HeaderProps) => {
             >
               Galerija
             </NavLink>
+            <NavLink
+              href="/arhiva"
+              isActive={location === "/arhiva" || location.startsWith("/arhiva/")}
+              onClick={closeMenu}
+            >
+              Arhiva
+            </NavLink>
           </MobileMenu>
         </TransparentContainer>
       ) : (
@@ -122,6 +136,13 @@ export const Header = ({ isHome = false }: HeaderProps) => {
                 >
                   Galerija
                 </NavLink>
+                <NavLink
+              href="/arhiva"
+              isActive={location === "/arhiva" || location.startsWith("/arhiva/")}
+              onClick={closeMenu}
+            >
+              Arhiva
+            </NavLink>
               </DesktopNav>
 
               <HamburgerButton onClick={toggleMenu}>
@@ -153,6 +174,13 @@ export const Header = ({ isHome = false }: HeaderProps) => {
               onClick={closeMenu}
             >
               Galerija
+            </NavLink>
+            <NavLink
+              href="/arhiva"
+              isActive={location === "/arhiva" || location.startsWith("/arhiva/")}
+              onClick={closeMenu}
+            >
+              Arhiva
             </NavLink>
           </MobileMenu>
         </Container>

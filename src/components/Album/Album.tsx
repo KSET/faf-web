@@ -36,6 +36,7 @@ const StyledImg = styled.img`
 
 const Container = styled(Link)`
   background-color: white;
+  display: block;
   width: 100%;
   line-height: normal;
   border: 1px solid #000;
@@ -43,14 +44,10 @@ const Container = styled(Link)`
   cursor: pointer;
   transition: 0.3s;
   text-decoration: none;
-  align-items: center;
 
   &:hover {
     box-shadow: 5px 5px 0px -1px #000;
     transform: translateY(0.5rem) translateX(0.5rem);
-  }
-  @media (min-width: 768px) {
-    width: 30%;
   }
 `;
 

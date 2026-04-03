@@ -5,67 +5,108 @@ import { Album, Title, PageLayout } from "../components";
 import styled from "styled-components";
 
 function Posts() {
-  const [galleries, setGalleries] = useState([]);
+  const [groupedGalleries, setGroupedGalleries] = useState<{ [key: string]: any[] }>({});
 
   useEffect(() => {
     getAllGalleries().then((galleries) => {
-      setGalleries(galleries);
+      const groups = galleries.reduce((acc: any, gallery: any) => {
+        const yearMatch = gallery.title.match(/\d{4}/);
+        const year = yearMatch ? yearMatch[0] : "Other";
+
+        if (!acc[year]) acc[year] = [];
+        acc[year].push(gallery);
+        return acc;
+      }, {});
+
+      setGroupedGalleries(groups);
     });
   }, []);
+
+  const sortedYears = Object.keys(groupedGalleries).sort((a, b) => b.localeCompare(a));
 
   return (
     <PageLayout>
       <Container>
         <ContentContainer>
           <Title text="Galerija" />
-            <PostsWrapper>
-              {galleries.length > 0 &&
-                galleries.map((gallery: any) => (
-                  <Album
-                    slug={gallery.slug.current}
-                    key={gallery._id}
-                    title={gallery.title}
-                    date={gallery.publishedAt}
-                    image={gallery.coverImage}
-                  />
+          
+          {sortedYears.map((year) => (
+            <YearSection key={year}>
+              <YearDivider>
+                <h2>{year}</h2>
+                <div className="line" />
+              </YearDivider>
+              
+              <PostsWrapper>
+                {groupedGalleries[year].map((gallery: any) => (
+                  <AlbumItem key={gallery._id}>
+                    <Album
+                      slug={gallery.slug.current}
+                      title={gallery.title}
+                      date={gallery.publishedAt}
+                      image={gallery.coverImage}
+                    />
+                  </AlbumItem>
                 ))}
-            </PostsWrapper>
+              </PostsWrapper>
+            </YearSection>
+          ))}
         </ContentContainer>
       </Container>
     </PageLayout>
   );
 }
 
+
 const Container = styled.div`
   display: flex;
   justify-content: center;
-  align-items: center;
 `;
 
 const ContentContainer = styled.div`
-  margin-top:20px;
+  margin-top: 20px;
+  width: 90%;
+  max-width: 1200px;
+`;
+
+const YearSection = styled.section`
+  margin-bottom: 4rem;
+`;
+
+const YearDivider = styled.div`
   display: flex;
-  flex-direction: column;
-  width: 85%;
-  max-width: 1024px;
+  align-items: center;
+  margin-bottom: 2rem;
+  font-family: "Montserrat";
+  h2 {
+    font-size: 2rem;
+    margin: 0 1.5rem 0 0;
+    color: #222;
+  }
+
+  .line {
+    flex-grow: 1;
+    height: 1px;
+    background-color: #eee;
+  }
 `;
 
 const PostsWrapper = styled.div`
-margin-top: 1rem;
   display: flex;
-  gap: 2rem;
-  flex-wrap: wrap;
-  flex-direction: column;
-  margin-bottom: 1rem;
+  flex-direction: row; /* Stack horizontally */
+  flex-wrap: wrap;    /* Allow jumping to next line */
+  gap: 2rem;          /* Space between items */
+  justify-content: flex-start;
+`;
 
-  @media (min-width: 768px) {
-    flex-direction: row;
+const AlbumItem = styled.div`
+  flex: 0 0 100%; 
 
-    > * {
-      flex: none;
-      width: 45%;
-    }
+  @media (min-width: 600px) {
+    flex: 0 0 calc(50% - 1rem); 
   }
+
+
 `;
 
 export default Posts;

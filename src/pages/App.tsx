@@ -178,7 +178,7 @@ const App = () => {
                 žele proširiti po cijelom svijetu. <br />
                 <br /> Cijeli svijet je daleko...a Zagreb imamo kod kuće pa nam
                 se u potrazi za najboljim (amaterskim) filmovima regije možeš
-                pridružiti u Klubu Močvara 18. i 19. listopada 2025. <br />
+                pridružiti u Klubu Močvara listopada 2026. Točan datum će biti objavljen vrlo brzo :)<br />
                 <br />
                 Gledamo se uskoro...
               </Text>
@@ -235,31 +235,33 @@ const App = () => {
               </SectionWrapper>
             )}
 
-            <NewsSectionWrapper>
-              <TitleWithScrollIndicator>
-                <Title text="Novosti" />
-                <ScrollIndicators>
-                  <ScrollArrow onClick={scrollPostsLeft}>←</ScrollArrow>
-                  <ScrollArrow onClick={scrollPostsRight}>→</ScrollArrow>
-                </ScrollIndicators>
-              </TitleWithScrollIndicator>
-              <PostsWrapper ref={postsWrapperRef}>
-                {posts.length > 0 &&
-                  posts.map((post) => (
-                    <Blogpost
-                      slug={post.slug.current}
-                      key={post._id}
-                      title={post.title}
-                      date={post.publishedAt}
-                      image={post.mainImage}
-                      isHome={true}
-                    />
-                  ))}
-              </PostsWrapper>
-              <ButtonWrapper>
-                <Button text="pročitaj sve" color="orange" link="/posts" />
-              </ButtonWrapper>
-            </NewsSectionWrapper>
+            {posts.length > 0 && (
+              <NewsSectionWrapper>
+                <TitleWithScrollIndicator>
+                  <Title text="Novosti" />
+                  <ScrollIndicators>
+                    <ScrollArrow onClick={scrollPostsLeft}>←</ScrollArrow>
+                    <ScrollArrow onClick={scrollPostsRight}>→</ScrollArrow>
+                  </ScrollIndicators>
+                </TitleWithScrollIndicator>
+                <PostsWrapper ref={postsWrapperRef}>
+                  {posts.length > 0 &&
+                    posts.map((post) => (
+                      <Blogpost
+                        slug={post.slug.current}
+                        key={post._id}
+                        title={post.title}
+                        date={post.publishedAt}
+                        image={post.mainImage}
+                        isHome={true}
+                      />
+                    ))}
+                </PostsWrapper>
+                <ButtonWrapper>
+                  <Button text="pročitaj sve" color="orange" link="/posts" />
+                </ButtonWrapper>
+              </NewsSectionWrapper>
+            )}
           </ContentWrapper>
         </ContentSection>
     </PageLayout>
