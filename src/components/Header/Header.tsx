@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import styled from "styled-components";
 import Eye from "../../assets/eye.svg";
 import { Link, useLocation } from "wouter";
+import { getAllGalleries, getAllPosts } from "../../sanity";
 
 interface HeaderProps {
   isHome?: boolean;
@@ -12,6 +13,35 @@ export const Header = ({ isHome = false }: HeaderProps) => {
   const [lastScrollY, setLastScrollY] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
   const [location] = useLocation();
+  const [galleryYears, setGalleryYears] = useState<string[]>([]);
+  const [archiveYears, setArchiveYears] = useState<string[]>([]);
+  const [openDropdown, setOpenDropdown] = useState<"galerija" | "arhiva" | null>(null);
+
+  useEffect(() => {
+    // Lista gelerija
+    getAllGalleries().then((galleries) => {
+      const years = new Set<string>();
+      galleries.forEach((gallery: any) => {
+        const yearMatch = gallery.title.match(/\d{4}/);
+        if (yearMatch) {
+          years.add(yearMatch[0]);
+        }
+      });
+      const sortedYears = Array.from(years).sort((a, b) => b.localeCompare(a));
+      setGalleryYears(sortedYears);
+    });
+
+    // Lista objava
+    getAllPosts().then((posts) => {
+      const years = new Set<string>();
+      posts.forEach((post: any) => {
+        const year = new Date(post.publishedAt).getFullYear().toString();
+        years.add(year);
+      });
+      const sortedYears = Array.from(years).sort((a, b) => b.localeCompare(a));
+      setArchiveYears(sortedYears);
+    });
+  }, []);
 
   const handleScroll = () => {
     if (window.scrollY > lastScrollY) {
@@ -40,6 +70,15 @@ export const Header = ({ isHome = false }: HeaderProps) => {
 
   const closeMenu = () => {
     setMenuOpen(false);
+    setOpenDropdown(null);
+  };
+
+  const handleDropdownToggle = (dropdown: "galerija" | "arhiva") => {
+    setOpenDropdown(openDropdown === dropdown ? null : dropdown);
+  };
+
+  const handleYearSelect = () => {
+    setOpenDropdown(null);
   };
 
   return (
@@ -59,19 +98,34 @@ export const Header = ({ isHome = false }: HeaderProps) => {
                 >
                   Novosti
                 </NavLink>
-                <NavLink
-                  href="/galerije"
-                  isActive={location === "/galerije" || location.startsWith("/galerija/")}
-                >
-                  Galerija
-                </NavLink>
-              <NavLink
-              href="/arhiva"
-              isActive={location === "/arhiva" || location.startsWith("/arhiva/")}
-              onClick={closeMenu}
-            >
-              Arhiva
-            </NavLink>
+                <DropdownContainer>
+                  <DropdownButton onClick={() => handleDropdownToggle("galerija")} isOpen={openDropdown === "galerija"}>
+                    Galerija
+                  </DropdownButton>
+                  {openDropdown === "galerija" && (
+                    <DropdownMenu>
+                      {galleryYears.map((year) => (
+                        <DropdownItem key={year} as={Link} href={`/galerije?year=${year}`} onClick={handleYearSelect}>
+                          {year}
+                        </DropdownItem>
+                      ))}
+                    </DropdownMenu>
+                  )}
+                </DropdownContainer>
+                <DropdownContainer>
+                  <DropdownButton onClick={() => handleDropdownToggle("arhiva")} isOpen={openDropdown === "arhiva"}>
+                    Arhiva
+                  </DropdownButton>
+                  {openDropdown === "arhiva" && (
+                    <DropdownMenu>
+                      {archiveYears.map((year) => (
+                        <DropdownItem key={year} as={Link} href={`/arhiva?year=${year}`} onClick={handleYearSelect}>
+                          {year}
+                        </DropdownItem>
+                      ))}
+                    </DropdownMenu>
+                  )}
+                </DropdownContainer>
               </DesktopNav>
 
               <HamburgerButton onClick={toggleMenu}>
@@ -95,20 +149,34 @@ export const Header = ({ isHome = false }: HeaderProps) => {
             >
               Novosti
             </NavLink>
-            <NavLink
-              href="/galerije"
-              isActive={location === "/galerije" || location.startsWith("/galerija/")}
-              onClick={closeMenu}
-            >
-              Galerija
-            </NavLink>
-            <NavLink
-              href="/arhiva"
-              isActive={location === "/arhiva" || location.startsWith("/arhiva/")}
-              onClick={closeMenu}
-            >
-              Arhiva
-            </NavLink>
+            <MobileDropdownContainer>
+              <DropdownButton onClick={() => handleDropdownToggle("galerija")} isOpen={openDropdown === "galerija"}>
+                Galerija {openDropdown === "galerija" ? "▼" : "▶"}
+              </DropdownButton>
+              {openDropdown === "galerija" && (
+                <MobileDropdownMenu>
+                  {galleryYears.map((year) => (
+                    <DropdownItem key={year} as={Link} href={`/galerije?year=${year}`} onClick={closeMenu}>
+                      {year}
+                    </DropdownItem>
+                  ))}
+                </MobileDropdownMenu>
+              )}
+            </MobileDropdownContainer>
+            <MobileDropdownContainer>
+              <DropdownButton onClick={() => handleDropdownToggle("arhiva")} isOpen={openDropdown === "arhiva"}>
+                Arhiva {openDropdown === "arhiva" ? "▼" : "▶"}
+              </DropdownButton>
+              {openDropdown === "arhiva" && (
+                <MobileDropdownMenu>
+                  {archiveYears.map((year) => (
+                    <DropdownItem key={year} as={Link} href={`/arhiva?year=${year}`} onClick={closeMenu}>
+                      {year}
+                    </DropdownItem>
+                  ))}
+                </MobileDropdownMenu>
+              )}
+            </MobileDropdownContainer>
           </MobileMenu>
         </TransparentContainer>
       ) : (
@@ -130,19 +198,34 @@ export const Header = ({ isHome = false }: HeaderProps) => {
                 >
                   Novosti
                 </NavLink>
-                <NavLink
-                  href="/galerije"
-                  isActive={location === "/galerije" || location.startsWith("/galerija/")}
-                >
-                  Galerija
-                </NavLink>
-                <NavLink
-              href="/arhiva"
-              isActive={location === "/arhiva" || location.startsWith("/arhiva/")}
-              onClick={closeMenu}
-            >
-              Arhiva
-            </NavLink>
+                <DropdownContainer>
+                  <DropdownButton onClick={() => handleDropdownToggle("galerija")} isOpen={openDropdown === "galerija"}>
+                    Galerija
+                  </DropdownButton>
+                  {openDropdown === "galerija" && (
+                    <DropdownMenu>
+                      {galleryYears.map((year) => (
+                        <DropdownItem key={year} as={Link} href={`/galerije?year=${year}`} onClick={handleYearSelect}>
+                          {year}
+                        </DropdownItem>
+                      ))}
+                    </DropdownMenu>
+                  )}
+                </DropdownContainer>
+                <DropdownContainer>
+                  <DropdownButton onClick={() => handleDropdownToggle("arhiva")} isOpen={openDropdown === "arhiva"}>
+                    Arhiva
+                  </DropdownButton>
+                  {openDropdown === "arhiva" && (
+                    <DropdownMenu>
+                      {archiveYears.map((year) => (
+                        <DropdownItem key={year} as={Link} href={`/arhiva?year=${year}`} onClick={handleYearSelect}>
+                          {year}
+                        </DropdownItem>
+                      ))}
+                    </DropdownMenu>
+                  )}
+                </DropdownContainer>
               </DesktopNav>
 
               <HamburgerButton onClick={toggleMenu}>
@@ -166,22 +249,34 @@ export const Header = ({ isHome = false }: HeaderProps) => {
             >
               Novosti
             </NavLink>
-            <NavLink
-              href="/galerije"
-              isActive={
-                location === "/galerije" || location.startsWith("/galerija/")
-              }
-              onClick={closeMenu}
-            >
-              Galerija
-            </NavLink>
-            <NavLink
-              href="/arhiva"
-              isActive={location === "/arhiva" || location.startsWith("/arhiva/")}
-              onClick={closeMenu}
-            >
-              Arhiva
-            </NavLink>
+            <MobileDropdownContainer>
+              <DropdownButton onClick={() => handleDropdownToggle("galerija")} isOpen={openDropdown === "galerija"}>
+                Galerija {openDropdown === "galerija" ? "▼" : "▶"}
+              </DropdownButton>
+              {openDropdown === "galerija" && (
+                <MobileDropdownMenu>
+                  {galleryYears.map((year) => (
+                    <DropdownItem key={year} as={Link} href={`/galerije?year=${year}`} onClick={closeMenu}>
+                      {year}
+                    </DropdownItem>
+                  ))}
+                </MobileDropdownMenu>
+              )}
+            </MobileDropdownContainer>
+            <MobileDropdownContainer>
+              <DropdownButton onClick={() => handleDropdownToggle("arhiva")} isOpen={openDropdown === "arhiva"}>
+                Arhiva {openDropdown === "arhiva" ? "▼" : "▶"}
+              </DropdownButton>
+              {openDropdown === "arhiva" && (
+                <MobileDropdownMenu>
+                  {archiveYears.map((year) => (
+                    <DropdownItem key={year} as={Link} href={`/arhiva?year=${year}`} onClick={closeMenu}>
+                      {year}
+                    </DropdownItem>
+                  ))}
+                </MobileDropdownMenu>
+              )}
+            </MobileDropdownContainer>
           </MobileMenu>
         </Container>
       )}
@@ -260,6 +355,84 @@ const NavLink = styled(Link)<{ isActive: boolean }>`
   &:hover {
     text-decoration: underline;
   }
+`;
+
+const DropdownContainer = styled.div`
+  position: relative;
+  display: inline-block;
+`;
+
+const DropdownButton = styled.button<{ isOpen: boolean }>`
+  font-family: "Montserrat", sans-serif;
+  font-weight: 600;
+  color: #333;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  line-height: 1;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  @media (max-width: 767px) {
+    width: 100%;
+    text-align: center;
+    padding: 0.8rem 1.5rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    display: block;
+  }
+`;
+
+const DropdownMenu = styled.div`
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  min-width: 120px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  z-index: 1001;
+  margin-top: 0.5rem;
+`;
+
+const MobileDropdownMenu = styled.div`
+  width: 100%;
+  background-color: #f5f5f5;
+`;
+
+const DropdownItem = styled(Link)`
+  display: block;
+  padding: 0.8rem 1.2rem;
+  color: #333;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 500;
+
+  &:hover {
+    background-color: #f0f0f0;
+    color: #000;
+  }
+
+  @media (max-width: 767px) {
+    text-align: center;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+`;
+
+const MobileDropdownContainer = styled.div`
+  width: 100%;
 `;
 
 const HamburgerButton = styled.button`

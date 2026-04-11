@@ -69,8 +69,8 @@ const calculateEventHeight = (startTime: string, endTime: string) => {
 
 const App = () => {
   const [eyePosition, setEyePosition] = useState<{ cx: number; cy: number }>({
-    cx: 194.714,
-    cy: 42.3506,
+    cx: 197,
+    cy: 48.5,
   });
   const [posts, setPosts] = useState<Post[]>([]);
   const [timeslots, setTimeslots] = useState<Timeslot[]>([]);
@@ -117,26 +117,49 @@ const App = () => {
   const groupedTimeslots = groupByDate(timeslots);
 
   useEffect(() => {
-    const handleMouseMove = (event: { clientX: number; clientY: number }) => {
-      const svg = document.getElementById("eye");
-      const rect = svg ? svg.getBoundingClientRect() : null;
-      const svgX = event.clientX - (rect?.left || 0);
-      const svgY = event.clientY - (rect?.bottom || 0);
+    // Teleofni oko
+    const isTouchDevice = () => {
+      return (
+        navigator.maxTouchPoints > 0 ||
+        (window.matchMedia("(pointer:coarse)").matches)
+      );
+    };
 
-      const eyeCenterX = 194.714;
-      const eyeCenterY = 42.3506;
+    if (isTouchDevice()) {
+      return;
+    }
+
+    let lastUpdateTime = 0;
+    const throttleMs = 16; // cca 60 fpsa, da malo ustedi na bateriji lapitopija
+
+    const handleMouseMove = (event: { clientX: number; clientY: number }) => {
+      const now = performance.now();
+      if (now - lastUpdateTime < throttleMs) return;
+      lastUpdateTime = now;
+
+      const svg = document.getElementById("logo");
+      if (!svg) return;
+
+      const rect = svg.getBoundingClientRect();
+      if (rect.width === 0 || rect.height === 0) return;
+
+      const svgX = ((event.clientX - rect.left) / rect.width) * 237;
+      const svgY = ((event.clientY - rect.top) / rect.height) * 105;
+
+      const eyeCenterX = 194.5;
+      const eyeCenterY = 42;
       const maxEyeMovement = 5;
 
       const deltaX = svgX - eyeCenterX;
       const deltaY = svgY - eyeCenterY;
       const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
 
-      const clampedDistance = Math.min(distance, maxEyeMovement);
-
-      const newEyeX = eyeCenterX + (deltaX / distance) * clampedDistance;
-      const newEyeY = eyeCenterY + (deltaY / distance) * clampedDistance;
-
-      setEyePosition({ cx: newEyeX, cy: newEyeY });
+      if (distance > 0) {
+        const clampedDistance = Math.min(distance, maxEyeMovement);
+        const newEyeX = eyeCenterX + (deltaX / distance) * clampedDistance;
+        const newEyeY = eyeCenterY + (deltaY / distance) * clampedDistance;
+        setEyePosition({ cx: newEyeX, cy: newEyeY });
+      }
     };
 
     document.addEventListener("mousemove", handleMouseMove);
@@ -178,9 +201,8 @@ const App = () => {
                 žele proširiti po cijelom svijetu. <br />
                 <br /> Cijeli svijet je daleko...a Zagreb imamo kod kuće pa nam
                 se u potrazi za najboljim (amaterskim) filmovima regije možeš
-                pridružiti u Klubu Močvara listopada 2026. Točan datum će biti objavljen vrlo brzo :)<br />
+                pridružiti u Klubu Močvara 17. i 18. listopada 2026.<br />
                 <br />
-                Gledamo se uskoro...
               </Text>
             </SectionWrapper>
 

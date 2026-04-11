@@ -1,11 +1,24 @@
 import "../index.css";
 import { getAllGalleries } from "../sanity";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Album, Title, PageLayout } from "../components";
 import styled from "styled-components";
 
 function Posts() {
   const [groupedGalleries, setGroupedGalleries] = useState<{ [key: string]: any[] }>({});
+  const [, setRerender] = useState({});
+  const prevUrlRef = useRef(window.location.href);
+
+  useEffect(() => {
+    const checkUrlChange = setInterval(() => {
+      if (window.location.href !== prevUrlRef.current) {
+        prevUrlRef.current = window.location.href;
+        setRerender({});
+      }
+    }, 50);
+    
+    return () => clearInterval(checkUrlChange);
+  }, []);
 
   useEffect(() => {
     getAllGalleries().then((galleries) => {
@@ -18,11 +31,21 @@ function Posts() {
         return acc;
       }, {});
 
+      // Sort godine
+      Object.keys(groups).forEach(year => {
+        groups[year].sort((a: any, b: any) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
+      });
+
       setGroupedGalleries(groups);
     });
   }, []);
 
+  //Dobivanje godina
+  const searchParams = new URLSearchParams(window.location.search);
+  const queryYear = searchParams.get("year");
+
   const sortedYears = Object.keys(groupedGalleries).sort((a, b) => b.localeCompare(a));
+  const yearsToDisplay = queryYear && groupedGalleries[queryYear] ? [queryYear] : sortedYears;
 
   return (
     <PageLayout>
@@ -30,11 +53,10 @@ function Posts() {
         <ContentContainer>
           <Title text="Galerija" />
           
-          {sortedYears.map((year) => (
+          {yearsToDisplay.map((year) => (
             <YearSection key={year}>
               <YearDivider>
                 <h2>{year}</h2>
-                <div className="line" />
               </YearDivider>
               
               <PostsWrapper>
@@ -105,8 +127,6 @@ const AlbumItem = styled.div`
   @media (min-width: 600px) {
     flex: 0 0 calc(50% - 1rem); 
   }
-
-
 `;
 
 export default Posts;

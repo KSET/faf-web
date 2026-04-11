@@ -1,17 +1,39 @@
 import "../index.css";
 import { getAllPosts } from "../sanity";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Blogpost, Title, PageLayout } from "../components";
 import styled from "styled-components";
 
 function Arhiva() {
-  const [posts, setPosts] = useState([]);
+  const [allPosts, setAllPosts] = useState<any[]>([]);
+  const [, setRerender] = useState({});
+  const prevUrlRef = useRef(window.location.href);
+
+  useEffect(() => {
+    const checkUrlChange = setInterval(() => {
+      if (window.location.href !== prevUrlRef.current) {
+        prevUrlRef.current = window.location.href;
+        setRerender({});
+      }
+    }, 50);
+    
+    return () => clearInterval(checkUrlChange);
+  }, []);
 
   useEffect(() => {
     getAllPosts().then((posts) => {
-      setPosts(posts);
+      setAllPosts(posts);
     });
   }, []);
+
+  // dobivanje podataka objave
+  const searchParams = new URLSearchParams(window.location.search);
+  const queryYear = searchParams.get("year");
+
+  // filtriraj po godini
+  const posts = (queryYear 
+    ? allPosts.filter(post => new Date(post.publishedAt).getFullYear().toString() === queryYear)
+    : allPosts).sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
 
   return (
     <PageLayout>
@@ -30,7 +52,9 @@ function Arhiva() {
                   />
                 ))}
               {posts.length === 0 && (
-                <NoPostsMessage>Nema starih postova</NoPostsMessage>
+                <NoPostsMessage>
+                  {queryYear ? `Nema postova iz godinu ${queryYear}` : "Nema starih postova"}
+                </NoPostsMessage>
               )}
             </PostsWrapper>
         </ContentContainer>
