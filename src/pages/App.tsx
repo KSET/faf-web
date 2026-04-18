@@ -182,7 +182,7 @@ const App = () => {
 
             <DateLocationContainer>
               <Location>KLUB MOČVARA</Location>
-              {/*<StyledDate>18. - 19. 10. 2025.</StyledDate>*/}
+              <StyledDate>17. - 18. 10. 2026.</StyledDate>
             </DateLocationContainer>
             
             {/* <ButtonWrapper>
@@ -468,9 +468,9 @@ const Location = styled.div`
   font-weight: 900;
 `;
 
-//const StyledDate = styled.div`
-//  font-weight: 600;
-//`;
+const StyledDate = styled.div`
+  font-weight: 600;
+`;
 
 const Text = styled.div`
   font-family: "Montserrat";
