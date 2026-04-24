@@ -3,7 +3,7 @@ import { Link } from "wouter";
 
 type Props = {
   text: string;
-  color?: "red" | "orange";
+  color?: "red" | "orange" | "pink";
   link: string;
   bold?: boolean;
 };
@@ -24,7 +24,7 @@ export const Button = ({ text, color = "red", link, bold }: Props) => {
 const StyledButton = styled(AutoLink)<{ color: string, bold?: boolean }>`
   width: fit-content;
   background-color: ${(props) =>
-    props.color === "red" ? "#a7ce64" : "#fe7677"};
+    props.color === "pink" ? "#E374B1" : "#634646"};
   color: ${(props) => (props.color === "red" ? "#fff" : "#000")};
   border: 2px solid #000;
   box-shadow: 8px 10px 0px -2px #000;

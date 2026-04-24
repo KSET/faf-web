@@ -12,7 +12,7 @@ type Props = {
 
 export const Blogpost = ({ title, date, image, slug, isHome }: Props) => {
   return (
-    <Container href={`/post/${slug}`} isHome={isHome}>
+    <Container href={`/post/${slug}`} $isHome={isHome}>
       <StyledImg src={urlFor(image)} alt={title} />
       <Content>
         <Title>{title}</Title>
@@ -23,13 +23,13 @@ export const Blogpost = ({ title, date, image, slug, isHome }: Props) => {
 };
 
 type ContainerProps = {
-  isHome?: boolean;
+  $isHome?: boolean;
 };
 
 const Container = styled(Link)<ContainerProps>`
   background-color: white;
   width: 100%;
-  max-width: ${({ isHome }) => (isHome && "300px")};
+  max-width: ${({ $isHome }) => ($isHome && "300px")};
   flex: 0 0 auto;
   line-height: normal;
   border: 1px solid #000;

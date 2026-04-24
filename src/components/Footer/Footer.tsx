@@ -21,14 +21,14 @@ export const Footer = ({ useBackground = true }: Props) => {
 
   return (
     <>
-      <Container useBackground={useBackground}>
+      <Container $useBackground={useBackground}>
         <Link href="/">
           <StyledLogo src={Logo} />
         </Link>
         <Links>
           {links.map((link) => {
             return (
-              <a href={link.link} target="_blank">
+              <a key={link.name} href={link.link} target="_blank">
                 {link.name}
               </a>
             );
@@ -50,9 +50,9 @@ export const Footer = ({ useBackground = true }: Props) => {
   );
 };
 
-const Container = styled.div<{ useBackground: boolean }>`
+const Container = styled.div<{ $useBackground: boolean }>`
   background-color: ${(props) =>
-    props.useBackground ? "#fe7677" : "transparent"};
+    props.$useBackground ? "#6080C9" : "transparent"};
   text-align: center;
   font-family: "Montserrat";
   font-weight: 600;
@@ -84,6 +84,8 @@ const Links = styled.div`
 
   a {
     color: #000;
+      color: rgba(255, 255, 255, 0.87);
+
     font-size: 1rem;
     font-weight: 600;
   }

@@ -1,5 +1,5 @@
 import "../index.css";
-import { getAllPosts } from "../sanity";
+import { getArchivePosts } from "../sanity";
 import { useEffect, useState, useRef } from "react";
 import { Blogpost, Title, PageLayout } from "../components";
 import styled from "styled-components";
@@ -21,7 +21,7 @@ function Arhiva() {
   }, []);
 
   useEffect(() => {
-    getAllPosts().then((posts) => {
+    getArchivePosts().then((posts) => {
       setAllPosts(posts);
     });
   }, []);
@@ -31,9 +31,9 @@ function Arhiva() {
   const queryYear = searchParams.get("year");
 
   // filtriraj po godini
-  const posts = (queryYear 
+  const posts = queryYear
     ? allPosts.filter(post => new Date(post.publishedAt).getFullYear().toString() === queryYear)
-    : allPosts).sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
+    : allPosts;
 
   return (
     <PageLayout>

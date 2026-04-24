@@ -13,6 +13,8 @@ opacity: 0.9;
   height: 100%; 
   overflow: hidden;
   background-color: #fdba74;
+  background-color: #76A7E5;
+
   display: flex;
   align-items: center;
   justify-content: center;
@@ -29,7 +31,15 @@ const GooSVG = styled.svg`
 export const BlobBackground = () => {
   const numBlobs = 20;
   const [blobs, setBlobs] = useState<
-    { id: number; x: number; y: number; scale: number }[]
+    { 
+      id: number
+      x: number
+      y: number
+      scale: number
+      offsetX: number
+      offsetY: number
+      duration: number
+    }[]
   >([]);
 
   useEffect(() => {
@@ -52,7 +62,15 @@ export const BlobBackground = () => {
     const newBlobs = [];
     for (let i = 0; i < numBlobs; i++) {
       const pos = generatePosition(newBlobs);
-      if (pos) newBlobs.push({ id: i, ...pos });
+      if (pos) {
+        newBlobs.push({
+          id: i,
+          ...pos,
+          offsetX: (Math.random() - 0.5) * 6,
+          offsetY: (Math.random() - 0.5) * 6,
+          duration: Math.random() * 4 + 8,
+        });
+      }
     }
     setBlobs(newBlobs);
   }, []);
@@ -87,7 +105,7 @@ export const BlobBackground = () => {
             fx="50%"
             fy="50%"
           >
-            <stop offset="90%" stopColor="#ff7777" />
+            <stop offset="90%" stopColor="#6080C9" />
             {/* <stop offset="100%" stopColor="#fe9377" /> */}
           </radialGradient>
         </defs>
@@ -100,13 +118,13 @@ export const BlobBackground = () => {
               r={10 * blob.scale}
               fill="url(#blobGradient)"
               animate={{
-                cx: [blob.x, blob.x + (Math.random() - 0.5) * 6, blob.x],
-                cy: [blob.y, blob.y + (Math.random() - 0.5) * 6, blob.y],
+                cx: [blob.x, blob.x + blob.offsetX, blob.x],
+                cy: [blob.y, blob.y + blob.offsetY, blob.y],
                 scale: [1, 1.1, 1],
               }}
               transition={{
                 repeat: Infinity,
-                duration: Math.random() * 4 + 8,
+                duration: blob.duration,
                 ease: "easeInOut",
               }}
             />

@@ -280,7 +280,7 @@ const App = () => {
                     ))}
                 </PostsWrapper>
                 <ButtonWrapper>
-                  <Button text="pročitaj sve" color="orange" link="/posts" />
+                  <Button text="pročitaj sve" color="pink" link="/posts" />
                 </ButtonWrapper>
               </NewsSectionWrapper>
             )}
