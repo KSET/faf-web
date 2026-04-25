@@ -104,6 +104,7 @@ const YearDivider = styled.div`
     font-size: 2rem;
     margin: 0 1.5rem 0 0;
     color: #222;
+    color: rgba(255, 255, 255, 0.87);
   }
 
   .line {
