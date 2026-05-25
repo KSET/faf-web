@@ -1,7 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
-  Button,
-  BlobBackground,
   Title,
   Blogpost,
   Logo,
@@ -9,10 +7,10 @@ import {
 } from "../components";
 import styled from "styled-components";
 import "../index.css";
-import { getAllTimeslots, getFrontpagePosts } from "../sanity";
+import { getAllPosts, getAllTimeslots } from "../sanity";
 import { Link } from "wouter";
 import React from "react";
-
+import { Button } from "../components";
 interface Timeslot {
   _id: string;
   title: string;
@@ -67,18 +65,202 @@ const calculateEventHeight = (startTime: string, endTime: string) => {
   return durationInHours * 100;
 };
 
+const groupPostsByYear = (posts: Post[]) => {
+  return posts.reduce<Record<string, Post[]>>((groupedPosts, post) => {
+    const year = new Date(post.publishedAt).getFullYear().toString();
+
+    if (!groupedPosts[year]) {
+      groupedPosts[year] = [];
+    }
+
+    groupedPosts[year].push(post);
+    return groupedPosts;
+  }, {});
+};
+
+const HalftoneBackground = () => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const particlesRef = useRef<
+    {
+      x: number;
+      y: number;
+      radius: number;
+      opacity: number;
+      vx: number;
+      vy: number;
+    }[]
+  >([]);
+  const isMobileRef = useRef(false);
+  const canvasSizeRef = useRef({ width: 0, height: 0 });
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const context = canvas.getContext("2d");
+    if (!context) return;
+
+    let animationFrame = 0;
+    const pixelRatio = window.devicePixelRatio || 1;
+
+    const createBouncingParticles = (width: number, height: number) => {
+      const particleCount = Math.max(
+        90,
+        Math.min(180, Math.round((width * height) / 9000))
+      );
+
+      particlesRef.current = Array.from({ length: particleCount }, () => {
+        const radius = 4 + Math.random() * 11;
+        const speed = 0.12 + Math.random() * 0.34;
+        const angle = Math.random() * Math.PI * 2;
+
+        return {
+          x: radius + Math.random() * Math.max(1, width - radius * 2),
+          y: radius + Math.random() * Math.max(1, height - radius * 2),
+          radius,
+          opacity: 0.28 + Math.random() * 0.42,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+        };
+      });
+    };
+
+    const resizeCanvas = () => {
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width * pixelRatio;
+      canvas.height = rect.height * pixelRatio;
+      context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+      isMobileRef.current = window.matchMedia(
+        "(pointer: coarse), (max-width: 767px)"
+      ).matches;
+
+      if (isMobileRef.current) {
+        particlesRef.current = [];
+      } else if (
+        particlesRef.current.length === 0 ||
+        canvasSizeRef.current.width !== rect.width ||
+        canvasSizeRef.current.height !== rect.height
+      ) {
+        createBouncingParticles(rect.width, rect.height);
+      }
+
+      canvasSizeRef.current = { width: rect.width, height: rect.height };
+    };
+
+    const drawHalftoneField = (
+      centerX: number,
+      centerY: number,
+      radius: number,
+      maxDot: number,
+      spacing: number,
+      rotation: number
+    ) => {
+      context.save();
+      context.translate(centerX, centerY);
+      context.rotate(rotation);
+      context.fillStyle = "#5263b6";
+
+      for (let y = -radius; y <= radius; y += spacing) {
+        for (let x = -radius; x <= radius; x += spacing) {
+          const distance = Math.hypot(x, y);
+          if (distance > radius) continue;
+
+          const fade = 1 - distance / radius;
+          const wave = 0.78 + Math.sin((x + y) * 0.03) * 0.12;
+          const dotRadius = Math.max(1.2, maxDot * fade * wave);
+
+          context.globalAlpha = Math.min(0.9, 0.18 + fade * 0.85);
+          context.beginPath();
+          context.arc(x, y, dotRadius, 0, Math.PI * 2);
+          context.fill();
+        }
+      }
+
+      context.restore();
+      context.globalAlpha = 1;
+    };
+
+    const drawParticles = (width: number, height: number) => {
+      context.fillStyle = "#405bb2";
+
+      particlesRef.current = particlesRef.current.map((particle) => {
+        let nextX = particle.x + particle.vx;
+        let nextY = particle.y + particle.vy;
+        let nextVx = particle.vx;
+        let nextVy = particle.vy;
+
+        if (nextX - particle.radius < 0 || nextX + particle.radius > width) {
+          nextVx *= -1;
+          nextX = Math.min(Math.max(nextX, particle.radius), width - particle.radius);
+        }
+
+        if (nextY - particle.radius < 0 || nextY + particle.radius > height) {
+          nextVy *= -1;
+          nextY = Math.min(Math.max(nextY, particle.radius), height - particle.radius);
+        }
+
+        context.globalAlpha = particle.opacity;
+        context.beginPath();
+        context.arc(nextX, nextY, particle.radius, 0, Math.PI * 2);
+        context.fill();
+
+        return {
+          ...particle,
+          x: nextX,
+          y: nextY,
+          vx: nextVx,
+          vy: nextVy,
+        };
+      });
+
+      context.globalAlpha = 1;
+    };
+
+    const render = () => {
+      const rect = canvas.getBoundingClientRect();
+      const width = rect.width;
+      const height = rect.height;
+
+      context.clearRect(0, 0, width, height);
+
+      if (isMobileRef.current) {
+        drawHalftoneField(width * 0.86, height * 0.18, width * 0.22, 13, 23, -0.12);
+        drawHalftoneField(width * 0.63, height * 0.58, width * 0.34, 12, 21, -0.22);
+        drawHalftoneField(width * 0.18, height * 0.93, width * 0.28, 12, 22, -0.28);
+      } else {
+        drawParticles(width, height);
+      }
+
+      animationFrame = requestAnimationFrame(render);
+    };
+
+    resizeCanvas();
+    render();
+
+    window.addEventListener("resize", resizeCanvas);
+
+    return () => {
+      cancelAnimationFrame(animationFrame);
+      window.removeEventListener("resize", resizeCanvas);
+    };
+  }, []);
+
+  return <HalftoneCanvas ref={canvasRef} aria-hidden="true" />;
+};
+
 const App = () => {
   const [eyePosition, setEyePosition] = useState<{ cx: number; cy: number }>({
     cx: 197,
     cy: 48.5,
   });
   const [posts, setPosts] = useState<Post[]>([]);
+  const [visibleOlderYearCount, setVisibleOlderYearCount] = useState(0);
   const [timeslots, setTimeslots] = useState<Timeslot[]>([]);
   const [selectedDate, setSelectedDate] = useState<string>("");
   const postsWrapperRef = React.useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    getFrontpagePosts().then((posts) => {
+    getAllPosts().then((posts) => {
       setPosts(posts);
     });
 
@@ -115,6 +297,18 @@ const App = () => {
   };
 
   const groupedTimeslots = groupByDate(timeslots);
+  const postsByYear = groupPostsByYear(posts);
+  const currentYear = new Date().getFullYear().toString();
+  const currentYearPosts = postsByYear[currentYear] ?? [];
+  const olderYears = Object.keys(postsByYear)
+    .filter((year) => Number(year) < Number(currentYear))
+    .sort((a, b) => Number(b) - Number(a));
+  const visibleOlderYears = olderYears.slice(0, visibleOlderYearCount);
+  const hasMoreOlderYears = visibleOlderYearCount < olderYears.length;
+  const hasExpandedNews = visibleOlderYearCount > 0;
+  const visibleCurrentYearPosts = hasExpandedNews
+    ? currentYearPosts
+    : currentYearPosts.slice(0, 3);
 
   useEffect(() => {
     // Teleofni oko
@@ -172,22 +366,24 @@ const App = () => {
   return (
     <PageLayout useBackgroundForFooter={false} isHomePage={true}>
         <HeroSection>
-          <BlobBackground />
+          <HalftoneBackground />
           <HeroContainer>
-            <Logo eyePosition={eyePosition} />
-            <TitleContainer>
+            <PosterLogo>
+              <Logo eyePosition={eyePosition} />
+            </PosterLogo>
+            <PosterTitleContainer>
               <FirstLine>Festival amaterskog</FirstLine>
               <SecondLine>filma</SecondLine>
-            </TitleContainer>
+            </PosterTitleContainer>
 
             <DateLocationContainer>
-              <Location>KLUB MOČVARA</Location>
               <StyledDate>17. - 18. 10. 2026.</StyledDate>
+              <Location>Klub Močvara</Location>
             </DateLocationContainer>
             
             <ButtonWrapper>
               <Button text="prijavi film" color="pink" link="/prijave" bold/>
-            </ButtonWrapper>
+            </ButtonWrapper> 
           </HeroContainer>
         </HeroSection>
 
@@ -257,18 +453,20 @@ const App = () => {
               </SectionWrapper>
             )}
 
-            {posts.length > 0 && (
+            {currentYearPosts.length > 0 && (
               <NewsSectionWrapper>
                 <TitleWithScrollIndicator>
                   <Title text="Novosti" />
+                  {!hasExpandedNews && (
                   <ScrollIndicators>
                     <ScrollArrow onClick={scrollPostsLeft}>←</ScrollArrow>
                     <ScrollArrow onClick={scrollPostsRight}>→</ScrollArrow>
                   </ScrollIndicators>
+                  )}
                 </TitleWithScrollIndicator>
-                <PostsWrapper ref={postsWrapperRef}>
-                  {posts.length > 0 &&
-                    posts.map((post) => (
+                <YearTitle>{currentYear}</YearTitle>
+                <PostsWrapper ref={postsWrapperRef} $isExpanded={hasExpandedNews}>
+                  {visibleCurrentYearPosts.map((post) => (
                       <Blogpost
                         slug={post.slug.current}
                         key={post._id}
@@ -277,10 +475,36 @@ const App = () => {
                         image={post.mainImage}
                         isHome={true}
                       />
-                    ))}
+                  ))}
                 </PostsWrapper>
+                {visibleOlderYears.map((year) => (
+                  <YearSection key={year}>
+                    <YearTitle>{year}</YearTitle>
+                    <ExpandedPostsWrapper>
+                      {postsByYear[year].map((post) => (
+                        <Blogpost
+                          slug={post.slug.current}
+                          key={post._id}
+                          title={post.title}
+                          date={post.publishedAt}
+                          image={post.mainImage}
+                          isHome={true}
+                        />
+                      ))}
+                    </ExpandedPostsWrapper>
+                  </YearSection>
+                ))}
                 <ButtonWrapper>
-                  <Button text="pročitaj sve" color="pink" link="/posts" />
+                  {hasMoreOlderYears && (
+                    <LoadMoreButton
+                      type="button"
+                      onClick={() =>
+                        setVisibleOlderYearCount((count) => count + 1)
+                      }
+                    >
+                      {hasExpandedNews ? "Prikaži još" : "pročitaj sve"}
+                    </LoadMoreButton>
+                  )}
                 </ButtonWrapper>
               </NewsSectionWrapper>
             )}
@@ -292,13 +516,25 @@ const App = () => {
 
 const HeroSection = styled.div`
   position: relative;
-  height: 100%;
-  min-height: 90vh;
+  min-height: 92vh;
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
+  background-color: #76a7e5;
+  border-bottom: 3px solid #000;
+  isolation: isolate;
+`;
+
+const HalftoneCanvas = styled.canvas`
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
 `;
 
 const ContentSection = styled.div`
@@ -310,12 +546,17 @@ const ContentSection = styled.div`
 
 const HeroContainer = styled.div`
   display: flex;
-  width: 100%;
+  width: min(82%, 620px);
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  padding-top: 200px;
-  padding-bottom: 100px;
+  padding: 58px 0 18px;
+  z-index: 1;
+
+  @media (min-width: 768px) {
+    width: min(66%, 720px);
+    padding: 58px 0 12px;
+  }
 `;
 
 const ContentWrapper = styled.div`
@@ -337,20 +578,40 @@ const SectionWrapper = styled.div`
 const NewsSectionWrapper = styled.div`
   width: 100%;
   max-width: 768px;
-  margin-bottom: 2rem;
+  margin-bottom: 1.6rem;
   display: flex;
   flex-direction: column;
   gap: 1rem;
   align-items: center;
 `;
 
-const PostsWrapper = styled.div`
+const YearSection = styled.section`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+`;
+
+const YearTitle = styled.h2`
+  width: 85%;
+  color: #000;
+  font-family: "Akira";
+  font-size: 24px;
+  font-weight: normal;
+  margin: 0;
+
+  @media (min-width: 768px) {
+    width: 100%;
+    font-size: 30px;
+  }
+`;
+
+const PostsWrapper = styled.div<{ $isExpanded: boolean }>`
   display: flex;
   gap: 1rem;
   width: 100%;
   margin-bottom: 1rem;
-  overflow-x: auto;
-  flex-wrap: nowrap;
+  overflow-x: ${(props) => (props.$isExpanded ? "visible" : "auto")};
+  flex-wrap: ${(props) => (props.$isExpanded ? "wrap" : "nowrap")};
   flex-direction: row;
   padding: 0.5rem 0.5rem 1rem 0;
   box-sizing: border-box;
@@ -376,44 +637,123 @@ const PostsWrapper = styled.div`
   }
 `;
 
+const ExpandedPostsWrapper = styled.div`
+  display: flex;
+  gap: 1rem;
+  width: 100%;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  flex-direction: column;
+  padding: 0.5rem 0.5rem 1rem 0;
+  box-sizing: border-box;
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+    padding-left: 0;
+    padding-right: 0;
+  }
+`;
+
 const ButtonWrapper = styled.div`
   display: flex;
   justify-content: center;
 `;
 
-const TitleContainer = styled.div`
-  margin-top: 1.7rem;
-  text-align: center;
+const LoadMoreButton = styled.button`
+  width: fit-content;
+  background-color: #e374b1;
+  color: #000;
+  border: 2px solid #000;
+  box-shadow: 8px 10px 0px -2px #000;
+  font-size: 15px;
+  font-family: "Montserrat";
+  padding: 1rem 2rem;
+  transition: 0.3s;
+  margin-top: 2rem;
+  font-weight: 600;
+  font-variant: all-small-caps;
+  cursor: pointer;
+  text-decoration: none;
+
+  &:hover {
+    box-shadow: 4px 5px 0px -1px #000;
+    transform: translateY(0.5rem) translateX(0.5rem);
+  }
+
+  @media (min-width: 768px) {
+    font-size: 24px;
+  }
+`;
+
+
+const PosterLogo = styled.div`
+  width: min(82%, 430px);
+  margin-bottom: 2rem;
+  padding: 0 1.8rem 1.8rem 0;
+
+  > div {
+    width: 100%;
+    max-width: none;
+  }
+
+  @media (min-width: 768px) {
+    width: min(54%, 450px);
+    margin-left: 0.3rem;
+  }
+`;
+
+const PosterTitleContainer = styled.div`
   font-family: "Akira";
+  color: #f8f8f8;
+  text-transform: uppercase;
+  line-height: 0.92;
+  letter-spacing: 0;
+  -webkit-text-stroke: 2px #000;
+  text-shadow: 7px 8px 0 #000;
+  margin-bottom: 2rem;
+
 `;
 
 const FirstLine = styled.div`
-  font-size: 1.2rem;
+  font-size: 2.5rem;
 
   @media (min-width: 768px) {
-    font-size: 2rem;
+    font-size: 3.8rem;
+  }
+
+  @media (min-width: 1100px) {
+    font-size: 4.8rem;
   }
 `;
 
 const SecondLine = styled.div`
-  font-size: 2.2rem;
+  font-size: 3rem;
 
   @media (min-width: 768px) {
-    font-size: 3rem;
+    font-size: 4.5rem;
+  }
+
+  @media (min-width: 1100px) {
+    font-size: 5.7rem;
   }
 `;
 
 const DateLocationContainer = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 5px;
+  align-items: flex-start;
+  gap: 1rem;
   font-family: "Montserrat";
-  font-size: 20px;
-  margin-top: 40px;
+  font-size: 1.8rem;
+  color: #000;
+  margin-left: 0.35rem;
 
   @media (min-width: 768px) {
-    font-size: 20px;
+    font-size: 2.35rem;
+  }
+
+  @media (min-width: 1100px) {
+    font-size: 2.8rem;
   }
 `;
 
@@ -465,11 +805,23 @@ const ScrollArrow = styled.div`
 `;
 
 const Location = styled.div`
-  font-weight: 900;
+  background-color: #e374b1;
+  box-shadow: 8px 8px 0 #000;
+  border: 1px solid #d35b9a;
+  font-weight: 500;
+  line-height: 1;
+  min-width: 12rem;
+  padding: 0.55rem 1.5rem 0.7rem;
 `;
 
 const StyledDate = styled.div`
-  font-weight: 600;
+  background-color: #e374b1;
+  box-shadow: 8px 8px 0 #000;
+  border: 1px solid #d35b9a;
+  font-weight: 500;
+  line-height: 1;
+  min-width: 14rem;
+  padding: 0.55rem 1.5rem 0.7rem;
 `;
 
 const Text = styled.div`

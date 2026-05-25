@@ -16,7 +16,7 @@ export const Logo = ({eyePosition}: Props) => {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <g clipPath="url(#clip0_2_3)">
+      <g>
         <path
           d="M229.479 13.6914H192.208C188.464 13.6914 185.432 16.7238 185.432 20.4679V97.269C185.432 101.007 188.464 104.046 192.208 104.046H229.479C233.224 104.046 236.256 101.007 236.256 97.269V20.4679C236.256 16.7238 233.224 13.6914 229.479 13.6914Z"
           fill="black"
@@ -2024,4 +2024,8 @@ const StyledLogo = styled.div`
   width: 70%;
   max-width: 563px;
   margin-bottom: 0;
+
+  svg {
+    overflow: visible;
+  }
 `;
