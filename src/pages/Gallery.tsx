@@ -15,6 +15,7 @@ function Gallery() {
 
   const [gallery, setGallery] = useState({
     title: "",
+    publishedAt: "",
     images: [],
     coverImage: {},
   });

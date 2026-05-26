@@ -105,7 +105,7 @@ const HalftoneBackground = () => {
 
     const createBouncingParticles = (width: number, height: number) => {
       const particleCount = Math.max(
-        90,
+        300,
         Math.min(180, Math.round((width * height) / 9000))
       );
 
@@ -372,7 +372,8 @@ const App = () => {
               <Logo eyePosition={eyePosition} />
             </PosterLogo>
             <PosterTitleContainer>
-              <FirstLine>Festival amaterskog</FirstLine>
+              <FirstLine>Festival</FirstLine>
+              <MiddleLine>amaterskog</MiddleLine>
               <SecondLine>filma</SecondLine>
             </PosterTitleContainer>
 
@@ -583,12 +584,21 @@ const NewsSectionWrapper = styled.div`
   flex-direction: column;
   gap: 1rem;
   align-items: center;
+
+  @media (max-width: 767px) {
+    width: 85%;
+  }
 `;
 
 const YearSection = styled.section`
   width: 100%;
   display: flex;
   flex-direction: column;
+  gap: 1rem;
+
+  @media (max-width: 767px) {
+    align-items: center;
+  }
 `;
 
 const YearTitle = styled.h2`
@@ -598,6 +608,10 @@ const YearTitle = styled.h2`
   font-size: 24px;
   font-weight: normal;
   margin: 0;
+
+  @media (max-width: 767px) {
+    text-align: center;
+  }
 
   @media (min-width: 768px) {
     width: 100%;
@@ -619,12 +633,30 @@ const PostsWrapper = styled.div<{ $isExpanded: boolean }>`
   scrollbar-width: thin; /* For Firefox */
   scroll-behavior: smooth; 
 
+  @media (max-width: 767px) {
+    align-items: center;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: center;
+    overflow-x: visible;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
   & > *:first-child {
-    margin-left: 0.5rem;
+    margin-left: ${(props) => (props.$isExpanded ? "0" : "0.5rem")};
   }
 
   & > *:last-child {
     margin-right: 0.5rem;
+  }
+
+  @media (max-width: 767px) {
+    & > *:first-child,
+    & > *:last-child {
+      margin-left: 0;
+      margin-right: 0;
+    }
   }
 
   @media (min-width: 768px) {
@@ -646,6 +678,12 @@ const ExpandedPostsWrapper = styled.div`
   flex-direction: column;
   padding: 0.5rem 0.5rem 1rem 0;
   box-sizing: border-box;
+
+  @media (max-width: 767px) {
+    align-items: center;
+    padding-left: 0;
+    padding-right: 0;
+  }
 
   @media (min-width: 768px) {
     flex-direction: row;
@@ -715,7 +753,19 @@ const PosterTitleContainer = styled.div`
 `;
 
 const FirstLine = styled.div`
-  font-size: 2.5rem;
+  font-size: 2.35rem;
+
+  @media (min-width: 768px) {
+    font-size: 3.8rem;
+  }
+
+  @media (min-width: 1100px) {
+    font-size: 4.8rem;
+  }
+`;
+
+const MiddleLine = styled.div`
+  font-size: 2rem;
 
   @media (min-width: 768px) {
     font-size: 3.8rem;

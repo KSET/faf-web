@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import styled from "styled-components";
 import Eye from "../../assets/eye.svg";
 import { Link, useLocation } from "wouter";
-import { getAllGalleries, getArchivePosts } from "../../sanity";
+import { getArchivePosts } from "../../sanity";
 
 interface HeaderProps {
   isHome?: boolean;
@@ -13,24 +13,10 @@ export const Header = ({ isHome = false }: HeaderProps) => {
   const [lastScrollY, setLastScrollY] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
   const [location] = useLocation();
-  const [galleryYears, setGalleryYears] = useState<string[]>([]);
   const [archiveYears, setArchiveYears] = useState<string[]>([]);
   const [openDropdown, setOpenDropdown] = useState<"galerija" | "arhiva" | null>(null);
 
   useEffect(() => {
-    // Lista gelerija
-    getAllGalleries().then((galleries) => {
-      const years = new Set<string>();
-      galleries.forEach((gallery: any) => {
-        const yearMatch = gallery.title.match(/\d{4}/);
-        if (yearMatch) {
-          years.add(yearMatch[0]);
-        }
-      });
-      const sortedYears = Array.from(years).sort((a, b) => b.localeCompare(a));
-      setGalleryYears(sortedYears);
-    });
-
     // Lista objava
     getArchivePosts().then((posts) => {
       const years = new Set<string>();
@@ -98,20 +84,12 @@ export const Header = ({ isHome = false }: HeaderProps) => {
                 >
                   Novosti
                 </NavLink>
-                <DropdownContainer>
-                  <DropdownButton onClick={() => handleDropdownToggle("galerija")} $isOpen={openDropdown === "galerija"}>
-                    Galerija
-                  </DropdownButton>
-                  {openDropdown === "galerija" && (
-                    <DropdownMenu>
-                      {galleryYears.map((year) => (
-                        <DropdownItem key={year} as={Link} href={`/galerije?year=${year}`} onClick={handleYearSelect}>
-                          {year}
-                        </DropdownItem>
-                      ))}
-                    </DropdownMenu>
-                  )}
-                </DropdownContainer>
+                <NavLink
+                  href="/galerije"
+                  $isActive={location === "/galerije" || location.startsWith("/galerija/")}
+                >
+                  Galerija
+                </NavLink>
                 <DropdownContainer>
                   <DropdownButton onClick={() => handleDropdownToggle("arhiva")} $isOpen={openDropdown === "arhiva"}>
                     Arhiva
@@ -126,6 +104,9 @@ export const Header = ({ isHome = false }: HeaderProps) => {
                     </DropdownMenu>
                   )}
                 </DropdownContainer>
+                <NavAnchor href="/#kontakti">
+                  Kontakti
+                </NavAnchor>
               </DesktopNav>
 
               <HamburgerButton onClick={toggleMenu}>
@@ -149,20 +130,13 @@ export const Header = ({ isHome = false }: HeaderProps) => {
             >
               Novosti
             </NavLink>
-            <MobileDropdownContainer>
-              <DropdownButton onClick={() => handleDropdownToggle("galerija")} $isOpen={openDropdown === "galerija"}>
-                Galerija {openDropdown === "galerija" ? "▼" : "▶"}
-              </DropdownButton>
-              {openDropdown === "galerija" && (
-                <MobileDropdownMenu>
-                  {galleryYears.map((year) => (
-                    <DropdownItem key={year} as={Link} href={`/galerije?year=${year}`} onClick={closeMenu}>
-                      {year}
-                    </DropdownItem>
-                  ))}
-                </MobileDropdownMenu>
-              )}
-            </MobileDropdownContainer>
+            <NavLink
+              href="/galerije"
+              $isActive={location === "/galerije" || location.startsWith("/galerija/")}
+              onClick={closeMenu}
+            >
+              Galerija
+            </NavLink>
             <MobileDropdownContainer>
               <DropdownButton onClick={() => handleDropdownToggle("arhiva")} $isOpen={openDropdown === "arhiva"}>
                 Arhiva {openDropdown === "arhiva" ? "▼" : "▶"}
@@ -177,6 +151,9 @@ export const Header = ({ isHome = false }: HeaderProps) => {
                 </MobileDropdownMenu>
               )}
             </MobileDropdownContainer>
+            <NavAnchor href="/#kontakti" onClick={closeMenu}>
+              Kontakti
+            </NavAnchor>
           </MobileMenu>
         </TransparentContainer>
       ) : (
@@ -198,20 +175,12 @@ export const Header = ({ isHome = false }: HeaderProps) => {
                 >
                   Novosti
                 </NavLink>
-                <DropdownContainer>
-                  <DropdownButton onClick={() => handleDropdownToggle("galerija")} $isOpen={openDropdown === "galerija"}>
-                    Galerija
-                  </DropdownButton>
-                  {openDropdown === "galerija" && (
-                    <DropdownMenu>
-                      {galleryYears.map((year) => (
-                        <DropdownItem key={year} as={Link} href={`/galerije?year=${year}`} onClick={handleYearSelect}>
-                          {year}
-                        </DropdownItem>
-                      ))}
-                    </DropdownMenu>
-                  )}
-                </DropdownContainer>
+                <NavLink
+                  href="/galerije"
+                  $isActive={location === "/galerije" || location.startsWith("/galerija/")}
+                >
+                  Galerija
+                </NavLink>
                 <DropdownContainer>
                   <DropdownButton onClick={() => handleDropdownToggle("arhiva")} $isOpen={openDropdown === "arhiva"}>
                     Arhiva
@@ -226,6 +195,9 @@ export const Header = ({ isHome = false }: HeaderProps) => {
                     </DropdownMenu>
                   )}
                 </DropdownContainer>
+                <NavAnchor href="/#kontakti">
+                  Kontakti
+                </NavAnchor>
               </DesktopNav>
 
               <HamburgerButton onClick={toggleMenu}>
@@ -249,20 +221,13 @@ export const Header = ({ isHome = false }: HeaderProps) => {
             >
               Novosti
             </NavLink>
-            <MobileDropdownContainer>
-              <DropdownButton onClick={() => handleDropdownToggle("galerija")} $isOpen={openDropdown === "galerija"}>
-                Galerija {openDropdown === "galerija" ? "▼" : "▶"}
-              </DropdownButton>
-              {openDropdown === "galerija" && (
-                <MobileDropdownMenu>
-                  {galleryYears.map((year) => (
-                    <DropdownItem key={year} as={Link} href={`/galerije?year=${year}`} onClick={closeMenu}>
-                      {year}
-                    </DropdownItem>
-                  ))}
-                </MobileDropdownMenu>
-              )}
-            </MobileDropdownContainer>
+            <NavLink
+              href="/galerije"
+              $isActive={location === "/galerije" || location.startsWith("/galerija/")}
+              onClick={closeMenu}
+            >
+              Galerija
+            </NavLink>
             <MobileDropdownContainer>
               <DropdownButton onClick={() => handleDropdownToggle("arhiva")} $isOpen={openDropdown === "arhiva"}>
                 Arhiva {openDropdown === "arhiva" ? "▼" : "▶"}
@@ -277,6 +242,9 @@ export const Header = ({ isHome = false }: HeaderProps) => {
                 </MobileDropdownMenu>
               )}
             </MobileDropdownContainer>
+            <NavAnchor href="/#kontakti" onClick={closeMenu}>
+              Kontakti
+            </NavAnchor>
           </MobileMenu>
         </Container>
       )}
@@ -361,6 +329,23 @@ const NavLink = styled(Link)<{ $isActive: boolean }>`
   }
 `;
 
+const NavAnchor = styled.a`
+  font-family: "Montserrat", sans-serif;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.87);
+  text-decoration: none;
+  transition: all 0.2s ease;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  @media (max-width: 767px) {
+    display: block;
+    width: fit-content;
+  }
+`;
+
 const DropdownContainer = styled.div`
   position: relative;
   display: inline-block;
@@ -387,7 +372,7 @@ const DropdownButton = styled.button<{ $isOpen: boolean }>`
   }
 
   @media (max-width: 767px) {
-    width: 100%;
+    width: fit-content;
     text-align: center;
     padding: 0.8rem 1.5rem;
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
@@ -439,6 +424,9 @@ const DropdownItem = styled(Link)`
 
 const MobileDropdownContainer = styled.div`
   width: 100%;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
 `;
 
 const HamburgerButton = styled.button`
