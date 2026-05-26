@@ -27,8 +27,8 @@ export const Footer = ({ useBackground = true }: Props) => {
       links: [
         { name: "kset.org", link: "https://www.kset.org/" },
         { name: "info@kset.org", link: "mailto:info@kset.org" },
-        { name: "facebook", link: "https://www.facebook.com/kset.org" },
-        { name: "instagram", link: "https://www.instagram.com/kset" },
+        { name: "facebook", link: "https://www.facebook.com/KSETZg" },
+        { name: "instagram", link: "https://www.instagram.com/klubkset" },
       ],
     },
   ];
