@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, MouseEvent } from "react";
 import styled from "styled-components";
 import Eye from "../../assets/eye.svg";
 import { Link, useLocation } from "wouter";
@@ -67,6 +67,19 @@ export const Header = ({ isHome = false }: HeaderProps) => {
     setOpenDropdown(null);
   };
 
+  const handleContactClick = (event: MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+    closeMenu();
+
+    if (window.location.pathname !== "/") {
+      window.location.href = "/#kontakti";
+      return;
+    }
+
+    window.history.pushState(null, "", "/#kontakti");
+    document.getElementById("kontakti")?.scrollIntoView();
+  };
+
   return (
     <>
       {isHome ? (
@@ -104,7 +117,7 @@ export const Header = ({ isHome = false }: HeaderProps) => {
                     </DropdownMenu>
                   )}
                 </DropdownContainer>
-                <NavAnchor href="/#kontakti">
+                <NavAnchor href="/#kontakti" onClick={handleContactClick}>
                   Kontakti
                 </NavAnchor>
               </DesktopNav>
@@ -151,7 +164,7 @@ export const Header = ({ isHome = false }: HeaderProps) => {
                 </MobileDropdownMenu>
               )}
             </MobileDropdownContainer>
-            <NavAnchor href="/#kontakti" onClick={closeMenu}>
+            <NavAnchor href="/#kontakti" onClick={handleContactClick}>
               Kontakti
             </NavAnchor>
           </MobileMenu>
@@ -195,7 +208,7 @@ export const Header = ({ isHome = false }: HeaderProps) => {
                     </DropdownMenu>
                   )}
                 </DropdownContainer>
-                <NavAnchor href="/#kontakti">
+                <NavAnchor href="/#kontakti" onClick={handleContactClick}>
                   Kontakti
                 </NavAnchor>
               </DesktopNav>
@@ -242,7 +255,7 @@ export const Header = ({ isHome = false }: HeaderProps) => {
                 </MobileDropdownMenu>
               )}
             </MobileDropdownContainer>
-            <NavAnchor href="/#kontakti" onClick={closeMenu}>
+            <NavAnchor href="/#kontakti" onClick={handleContactClick}>
               Kontakti
             </NavAnchor>
           </MobileMenu>

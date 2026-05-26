@@ -4,6 +4,11 @@ import { useEffect, useState, useRef } from "react";
 import { Album, Title, PageLayout } from "../components";
 import styled from "styled-components";
 
+const getGalleryDay = (title: string) => {
+  const dayMatch = title.match(/(\d+)\.\s*dan/i);
+  return dayMatch ? Number(dayMatch[1]) : null;
+};
+
 function Posts() {
   const [groupedGalleries, setGroupedGalleries] = useState<{ [key: string]: any[] }>({});
   const [, setRerender] = useState({});
@@ -33,7 +38,19 @@ function Posts() {
 
       // Sort godine
       Object.keys(groups).forEach(year => {
-        groups[year].sort((a: any, b: any) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
+        groups[year].sort((a: any, b: any) => {
+          const dayA = getGalleryDay(a.title);
+          const dayB = getGalleryDay(b.title);
+
+          if (dayA !== null && dayB !== null && dayA !== dayB) {
+            return dayA - dayB;
+          }
+
+          if (dayA !== null && dayB === null) return -1;
+          if (dayA === null && dayB !== null) return 1;
+
+          return new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime();
+        });
       });
 
       setGroupedGalleries(groups);

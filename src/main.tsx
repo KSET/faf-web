@@ -14,6 +14,23 @@ const ScrollToTop = () => {
   const [pathname] = useLocation();
 
   useEffect(() => {
+    const hash = window.location.hash;
+
+    if (hash) {
+      let attempts = 0;
+      const scrollToHash = () => {
+        document.getElementById(hash.slice(1))?.scrollIntoView();
+        attempts += 1;
+
+        if (attempts < 12) {
+          window.setTimeout(scrollToHash, 150);
+        }
+      };
+
+      window.setTimeout(scrollToHash, 0);
+      return;
+    }
+
     window.scrollTo(0, 0);
   }, [pathname]);
 
