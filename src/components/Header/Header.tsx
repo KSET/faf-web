@@ -17,7 +17,6 @@ export const Header = ({ isHome = false }: HeaderProps) => {
   const [openDropdown, setOpenDropdown] = useState<"galerija" | "arhiva" | null>(null);
 
   useEffect(() => {
-    // Lista objava
     getArchivePosts().then((posts) => {
       const years = new Set<string>();
       posts.forEach((post: any) => {
@@ -31,17 +30,14 @@ export const Header = ({ isHome = false }: HeaderProps) => {
 
   const handleScroll = () => {
     if (window.scrollY > lastScrollY) {
-      // Scrolling down
       setIsVisible(false);
     } else {
-      // Scrolling up
       setIsVisible(true);
     }
     setLastScrollY(window.scrollY);
   };
 
   useEffect(() => {
-    // Only add scroll listener for non-home header (sticky header)
     if (!isHome) {
       window.addEventListener("scroll", handleScroll);
       return () => {
@@ -83,7 +79,6 @@ export const Header = ({ isHome = false }: HeaderProps) => {
   return (
     <>
       {isHome ? (
-        // Home transparent header
         <TransparentContainer $menuOpen={menuOpen}>
           <Wrapper>
             <HomeNavContainer>
@@ -170,7 +165,6 @@ export const Header = ({ isHome = false }: HeaderProps) => {
           </MobileMenu>
         </TransparentContainer>
       ) : (
-        // Regular sticky header
         <Container $isVisible={isVisible} $menuOpen={menuOpen}>
           <Wrapper>
             <NavContainer>
@@ -265,7 +259,6 @@ export const Header = ({ isHome = false }: HeaderProps) => {
   );
 };
 
-// Shared styled components
 const BaseContainer = styled.div`
   width: 100%;
   display: flex;
@@ -273,10 +266,9 @@ const BaseContainer = styled.div`
   align-items: center;
   height: 100px;
   z-index: 1000;
+  position: relative; /* Osigurava stabilan kontekst pozicioniranja */
 `;
 
-//TU STOJI BOJA ZA HEADER
-// Regular header container
 const Container = styled(BaseContainer)<{ $isVisible: boolean; $menuOpen: boolean }>`
   background-color: #6080C9; 
   position: sticky;
@@ -286,7 +278,6 @@ const Container = styled(BaseContainer)<{ $isVisible: boolean; $menuOpen: boolea
   transition: transform 0.3s ease-in-out;
 `;
 
-// Transparent header container for homepage
 const TransparentContainer = styled(BaseContainer)<{ $menuOpen: boolean }>`
   background-color: ${({ $menuOpen }) => $menuOpen ? '#6080C9' : 'transparent'};
   position: absolute;
@@ -304,7 +295,6 @@ const NavContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  
 `;
 
 const HomeNavContainer = styled.div`
@@ -312,7 +302,7 @@ const HomeNavContainer = styled.div`
   justify-content: flex-end;
   align-items: center;
   height: 100%;
-  
+  width: 100%;
 `;
 
 const StyledLogo = styled.img`
@@ -326,6 +316,10 @@ const DesktopNav = styled.nav`
 
   @media (min-width: 768px) {
     display: flex;
+    position: fixed; /* Mijenja kontekst pozicioniranja na prozor preglednika */
+    right: 40px;    /* Odmak od desnog ruba ekrana */
+    top: 35px;      /* Odmak od gornjeg ruba ekrana kako bi se savršeno centriralo u visinu od 100px */
+    z-index: 1002;
   }
 `;
 
@@ -367,9 +361,7 @@ const DropdownContainer = styled.div`
 const DropdownButton = styled.button<{ $isOpen: boolean }>`
   font-family: "Montserrat", sans-serif;
   font-weight: 600;
-  color: #333;
   color: rgba(255, 255, 255, 0.87);
-
   background: none;
   border: none;
   cursor: pointer;
@@ -473,8 +465,7 @@ const HamburgerIcon = styled.div<{ $menuOpen: boolean }>`
 
     &:nth-child(1) {
       top: ${({ $menuOpen }) => ($menuOpen ? "9px" : "0px")};
-      transform: ${({ $menuOpen }) =>
-        $menuOpen ? "rotate(45deg)" : "rotate(0)"};
+      transform: ${({ $menuOpen }) => $menuOpen ? "rotate(45deg)" : "rotate(0)"};
     }
 
     &:nth-child(2) {
@@ -484,8 +475,7 @@ const HamburgerIcon = styled.div<{ $menuOpen: boolean }>`
 
     &:nth-child(3) {
       top: ${({ $menuOpen }) => ($menuOpen ? "9px" : "18px")};
-      transform: ${({ $menuOpen }) =>
-        $menuOpen ? "rotate(-45deg)" : "rotate(0)"};
+      transform: ${({ $menuOpen }) => $menuOpen ? "rotate(-45deg)" : "rotate(0)"};
     }
   }
 `;

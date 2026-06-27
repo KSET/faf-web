@@ -11,6 +11,7 @@ import { getAllPosts, getAllTimeslots } from "../sanity";
 import { Link } from "wouter";
 import React from "react";
 import { Button } from "../components";
+
 interface Timeslot {
   _id: string;
   title: string;
@@ -32,11 +33,8 @@ const groupByDate = (timeslots: Timeslot[]) => {
   const groupedTimeslots = timeslots.reduce<Record<string, Timeslot[]>>(
     (acc, timeslot) => {
       const startDate = new Date(timeslot.startTime);
-
       const formattedDate = startDate.toISOString().split("T")[0];
-
       const subotaDate = "2025-10-18";
-
       const dateLabel = formattedDate === subotaDate ? "subota" : "nedjelja";
 
       if (!acc[dateLabel]) {
@@ -274,18 +272,16 @@ const App = () => {
       
       setSelectedDate(isOct19 ? "nedjelja" : "subota");
     });
-    }, []);
+  }, []);
 
-
-    const scrollPostsLeft = () => {
+  const scrollPostsLeft = () => {
     if (postsWrapperRef.current) {
       postsWrapperRef.current.scrollBy({
-      left: -300,
-      behavior: "smooth",
+        left: -300,
+        behavior: "smooth",
       });
     }
   };
-
 
   const scrollPostsRight = () => {
     if (postsWrapperRef.current) {
@@ -311,7 +307,6 @@ const App = () => {
     : currentYearPosts.slice(0, 3);
 
   useEffect(() => {
-    // Teleofni oko
     const isTouchDevice = () => {
       return (
         navigator.maxTouchPoints > 0 ||
@@ -324,7 +319,7 @@ const App = () => {
     }
 
     let lastUpdateTime = 0;
-    const throttleMs = 16; // cca 60 fpsa, da malo ustedi na bateriji lapitopija
+    const throttleMs = 16;
 
     const handleMouseMove = (event: { clientX: number; clientY: number }) => {
       const now = performance.now();
@@ -365,109 +360,124 @@ const App = () => {
 
   return (
     <PageLayout useBackgroundForFooter={false} isHomePage={true}>
-        <HeroSection>
-          <HalftoneBackground />
-          <HeroContainer>
-            <PosterLogo>
-              <Logo eyePosition={eyePosition} />
-            </PosterLogo>
-            <PosterTitleContainer>
-              <FirstLine>Festival</FirstLine>
-              <MiddleLine>amaterskog</MiddleLine>
-              <SecondLine>filma</SecondLine>
-            </PosterTitleContainer>
+      <HeroSection>
+        <HalftoneBackground />
+        <HeroContainer>
+          <PosterLogo>
+            <Logo eyePosition={eyePosition} />
+          </PosterLogo>
+          <PosterTitleContainer>
+            <FirstLine>Festival</FirstLine>
+            <FirstLine>amaterskog</FirstLine>
+            <FirstLine>filma</FirstLine>
+          </PosterTitleContainer>
 
-            <DateLocationContainer>
-              <StyledDate>17. - 18. 10. 2026.</StyledDate>
-              <Location>Klub Močvara</Location>
-            </DateLocationContainer>
-            
-            <ButtonWrapper>
-              <Button text="prijavi film" color="pink" link="/prijave" bold/>
-            </ButtonWrapper> 
-          </HeroContainer>
-        </HeroSection>
+          <DateLocationContainer>
+            <StyledDate>17. - 18. 10. 2026.</StyledDate>
+            <Location>Klub Močvara</Location>
+          </DateLocationContainer>
+          
+          <ButtonWrapper>
+            <Button text="prijavi film" color="pink" link="/prijave" bold/>
+          </ButtonWrapper> 
+        </HeroContainer>
+      </HeroSection>
 
-        <ContentSection>
-          <ContentWrapper>
+      <ContentSection>
+        <ContentWrapper>
+          <SectionWrapper>
+            <Title text="O FAF-u" />
+            <Text>
+              Festival Amaterskog Filma - za prijatelje FAF, festival je u
+              organizaciji studenata koji svoju ljubav prema amaterskom filmu
+              žele proširiti po cijelom svijetu. <br />
+              <br /> Cijeli svijet je daleko...a Zagreb imamo kod kuće pa nam
+              se u potrazi za najboljim (amaterskim) filmovima regije možeš
+              pridružiti u Klubu Močvara 17. i 18. listopada 2026.<br />
+              <br />
+            </Text>
+          </SectionWrapper>
+
+          {timeslots.length > 0 && (
             <SectionWrapper>
-              <Title text="O FAF-u" />
-              <Text>
-                Festival Amaterskog Filma - za prijatelje FAF, festival je u
-                organizaciji studenata koji svoju ljubav prema amaterskom filmu
-                žele proširiti po cijelom svijetu. <br />
-                <br /> Cijeli svijet je daleko...a Zagreb imamo kod kuće pa nam
-                se u potrazi za najboljim (amaterskim) filmovima regije možeš
-                pridružiti u Klubu Močvara 17. i 18. listopada 2026.<br />
-                <br />
-              </Text>
-            </SectionWrapper>
+              <Title text="Raspored" />
 
-            {timeslots.length > 0 && (
-              <SectionWrapper>
-                <Title text="Raspored" />
+              <DateChooser>
+                {Object.keys(groupedTimeslots).map((date) => (
+                  <DateButton
+                    key={date}
+                    isSelected={selectedDate === date}
+                    onClick={() => setSelectedDate(date)}
+                  >
+                    {date}
+                  </DateButton>
+                ))}
+              </DateChooser>
 
-                <DateChooser>
-                  {Object.keys(groupedTimeslots).map((date) => (
-                    <DateButton
-                      key={date}
-                      isSelected={selectedDate === date}
-                      onClick={() => setSelectedDate(date)}
+              <TimetableWrapper>
+                {selectedDate &&
+                  groupedTimeslots[selectedDate] &&
+                  groupedTimeslots[selectedDate].map((timeslot) => (
+                    <StyledLink
+                      href={
+                        timeslot.isClickable && timeslot.slug?.current
+                          ? `timeslot/${timeslot.slug?.current}`
+                          : ""
+                      }
+                      key={timeslot._id}
                     >
-                      {date}
-                    </DateButton>
-                  ))}
-                </DateChooser>
-
-                <TimetableWrapper>
-                  {selectedDate &&
-                    groupedTimeslots[selectedDate] &&
-                    groupedTimeslots[selectedDate].map((timeslot) => (
-                      <StyledLink
-                        href={
-                          timeslot.isClickable && timeslot.slug?.current
-                            ? `timeslot/${timeslot.slug?.current}`
-                            : ""
-                        }
-                        key={timeslot._id}
+                      <TimeSlotContainer
+                        height={calculateEventHeight(
+                          timeslot.startTime,
+                          timeslot.endTime
+                        )}
                       >
-                        <TimeSlotContainer
-                          height={calculateEventHeight(
-                            timeslot.startTime,
-                            timeslot.endTime
+                        <TimeLabel>
+                          {new Date(timeslot.startTime).toLocaleTimeString(
+                            "hr-HR",
+                            {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            }
                           )}
-                        >
-                          <TimeLabel>
-                            {new Date(timeslot.startTime).toLocaleTimeString(
-                              "hr-HR",
-                              {
-                                hour: "2-digit",
-                                minute: "2-digit",
-                              }
-                            )}
-                          </TimeLabel>
-                          <EventLabel>{timeslot.title}</EventLabel>
-                        </TimeSlotContainer>
-                      </StyledLink>
-                    ))}
-                </TimetableWrapper>
-              </SectionWrapper>
-            )}
+                        </TimeLabel>
+                        <EventLabel>{timeslot.title}</EventLabel>
+                      </TimeSlotContainer>
+                    </StyledLink>
+                  ))}
+              </TimetableWrapper>
+            </SectionWrapper>
+          )}
 
-            {currentYearPosts.length > 0 && (
-              <NewsSectionWrapper>
-                <TitleWithScrollIndicator>
-                  <Title text="Novosti" />
-                  {!hasExpandedNews && (
+          {currentYearPosts.length > 0 && (
+            <NewsSectionWrapper>
+              <TitleWithScrollIndicator>
+                <Title text="Novosti" />
+                {!hasExpandedNews && (
                   <ScrollIndicators>
                     <ScrollArrow onClick={scrollPostsLeft}>←</ScrollArrow>
                     <ScrollArrow onClick={scrollPostsRight}>→</ScrollArrow>
                   </ScrollIndicators>
-                  )}
-                </TitleWithScrollIndicator>
-                <YearTitle>{currentYear}</YearTitle>
-                <PostsWrapper ref={postsWrapperRef} $isExpanded={hasExpandedNews}>
-                  {visibleCurrentYearPosts.map((post) => (
+                )}
+              </TitleWithScrollIndicator>
+              <YearTitle>{currentYear}</YearTitle>
+              <PostsWrapper ref={postsWrapperRef} $isExpanded={hasExpandedNews}>
+                {visibleCurrentYearPosts.map((post) => (
+                  <Blogpost
+                    slug={post.slug.current}
+                    key={post._id}
+                    title={post.title}
+                    date={post.publishedAt}
+                    image={post.mainImage}
+                    isHome={true}
+                  />
+                ))}
+              </PostsWrapper>
+              {visibleOlderYears.map((year) => (
+                <YearSection key={year}>
+                  <YearTitle>{year}</YearTitle>
+                  <ExpandedPostsWrapper>
+                    {postsByYear[year].map((post) => (
                       <Blogpost
                         slug={post.slug.current}
                         key={post._id}
@@ -475,42 +485,27 @@ const App = () => {
                         date={post.publishedAt}
                         image={post.mainImage}
                         isHome={true}
-                      />
-                  ))}
-                </PostsWrapper>
-                {visibleOlderYears.map((year) => (
-                  <YearSection key={year}>
-                    <YearTitle>{year}</YearTitle>
-                    <ExpandedPostsWrapper>
-                      {postsByYear[year].map((post) => (
-                        <Blogpost
-                          slug={post.slug.current}
-                          key={post._id}
-                          title={post.title}
-                          date={post.publishedAt}
-                          image={post.mainImage}
-                          isHome={true}
-                        />
-                      ))}
-                    </ExpandedPostsWrapper>
-                  </YearSection>
-                ))}
-                <ButtonWrapper>
-                  {hasMoreOlderYears && (
-                    <LoadMoreButton
-                      type="button"
-                      onClick={() =>
-                        setVisibleOlderYearCount((count) => count + 1)
-                      }
-                    >
-                      {hasExpandedNews ? "Prikaži još" : "pročitaj sve"}
-                    </LoadMoreButton>
-                  )}
-                </ButtonWrapper>
-              </NewsSectionWrapper>
-            )}
-          </ContentWrapper>
-        </ContentSection>
+                  />
+                    ))}
+                  </ExpandedPostsWrapper>
+                </YearSection>
+              ))}
+              <ButtonWrapper>
+                {hasMoreOlderYears && (
+                  <LoadMoreButton
+                    type="button"
+                    onClick={() =>
+                      setVisibleOlderYearCount((count) => count + 1)
+                    }
+                  >
+                    {hasExpandedNews ? "Prikaži još" : "pročitaj sve"}
+                  </LoadMoreButton>
+                )}
+              </ButtonWrapper>
+            </NewsSectionWrapper>
+          )}
+        </ContentWrapper>
+      </ContentSection>
     </PageLayout>
   );
 };
@@ -549,10 +544,11 @@ const HeroContainer = styled.div`
   display: flex;
   width: min(82%, 620px);
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;        
   justify-content: center;
   padding: 58px 0 18px;
   z-index: 1;
+  margin: 0 auto;          
 
   @media (min-width: 768px) {
     width: min(66%, 720px);
@@ -695,6 +691,34 @@ const ExpandedPostsWrapper = styled.div`
 const ButtonWrapper = styled.div`
   display: flex;
   justify-content: center;
+  margin-top: 0 rem;           
+  margin-bottom: 2rem;         
+  a, button {
+    background-color: #e374b1 !important;
+    font-size: 20px !important;            
+    padding: 1rem 4rem !important;      
+    border: 2px solid #000 !important;    
+    box-shadow: 10px 12px 0px -2px #000 !important; 
+    font-family: "Montserrat", sans-serif;
+    font-weight: 800;                     
+    font-variant: all-small-caps;
+    letter-spacing: 1px;               
+    transition: 0.3s ease;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    white-space: nowrap;                 
+
+    &:hover {
+      box-shadow: 4px 5px 0px -1px #000 !important;
+      transform: translateY(0.6rem) translateX(0.6rem);
+    }
+
+    @media (min-width: 768px) {
+      font-size: 34px !important;        
+      padding: 1.8rem 5rem !important;    
+    }
+  }
 `;
 
 const LoadMoreButton = styled.button`
@@ -723,11 +747,9 @@ const LoadMoreButton = styled.button`
   }
 `;
 
-
 const PosterLogo = styled.div`
-  width: min(82%, 430px);
-  margin-bottom: 2rem;
-  padding: 0 1.8rem 1.8rem 0;
+  width: min(82%, 260px); 
+  margin-bottom: 1.5rem;
 
   > div {
     width: 100%;
@@ -735,11 +757,11 @@ const PosterLogo = styled.div`
   }
 
   @media (min-width: 768px) {
-    width: min(54%, 450px);
-    margin-left: 0.3rem;
+    width: min(54%, 280px);
   }
 `;
 
+// PROMIJENJENO: Dodan text-align: center i flex centriranje za unutarnje linije teksta naslova
 const PosterTitleContainer = styled.div`
   font-family: "Akira";
   color: #f8f8f8;
@@ -749,7 +771,11 @@ const PosterTitleContainer = styled.div`
   -webkit-text-stroke: 2px #000;
   text-shadow: 7px 8px 0 #000;
   margin-bottom: 2rem;
-
+  text-align: center;         /* Centriranje teksta unutar kontejnera */
+  display: flex;
+  flex-direction: column;
+  align-items: center;        /* Centriranje samih blokova linija teksta */
+  width: 100%;
 `;
 
 const FirstLine = styled.div`
@@ -764,47 +790,18 @@ const FirstLine = styled.div`
   }
 `;
 
-const MiddleLine = styled.div`
-  font-size: 2rem;
 
-  @media (min-width: 768px) {
-    font-size: 3.8rem;
-  }
-
-  @media (min-width: 1100px) {
-    font-size: 4.8rem;
-  }
-`;
-
-const SecondLine = styled.div`
-  font-size: 3rem;
-
-  @media (min-width: 768px) {
-    font-size: 4.5rem;
-  }
-
-  @media (min-width: 1100px) {
-    font-size: 5.7rem;
-  }
-`;
 
 const DateLocationContainer = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;        /* PROMIJENJENO sa flex-start na center */
   gap: 1rem;
   font-family: "Montserrat";
   font-size: 1.8rem;
   color: #000;
-  margin-left: 0.35rem;
-
-  @media (min-width: 768px) {
-    font-size: 2.35rem;
-  }
-
-  @media (min-width: 1100px) {
-    font-size: 2.8rem;
-  }
+  margin-bottom: 2rem;        /* Dodan odmak prije gumba */
+  width: 100%;
 `;
 
 const TitleWithScrollIndicator = styled.div`
@@ -862,6 +859,7 @@ const Location = styled.div`
   line-height: 1;
   min-width: 12rem;
   padding: 0.55rem 1.5rem 0.7rem;
+  text-align: center;
 `;
 
 const StyledDate = styled.div`
@@ -872,6 +870,7 @@ const StyledDate = styled.div`
   line-height: 1;
   min-width: 14rem;
   padding: 0.55rem 1.5rem 0.7rem;
+  text-align: center;
 `;
 
 const Text = styled.div`
