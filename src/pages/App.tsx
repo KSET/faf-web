@@ -446,10 +446,6 @@ const App = () => {
             <NewsSectionWrapper>
               <TitleWithScrollIndicator>
                 <Title text="Novosti" />
-                <ScrollIndicators>
-                  <ScrollArrow onClick={scrollPostsLeft}>←</ScrollArrow>
-                  <ScrollArrow onClick={scrollPostsRight}>→</ScrollArrow>
-                </ScrollIndicators>
               </TitleWithScrollIndicator>
               <YearTitle>{currentYear}</YearTitle>
               <PostsWrapper ref={postsWrapperRef} $isExpanded={true}>
