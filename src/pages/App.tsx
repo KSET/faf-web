@@ -252,7 +252,6 @@ const App = () => {
     cy: 48.5,
   });
   const [posts, setPosts] = useState<Post[]>([]);
-  const [visibleOlderYearCount, setVisibleOlderYearCount] = useState(0);
   const [timeslots, setTimeslots] = useState<Timeslot[]>([]);
   const [selectedDate, setSelectedDate] = useState<string>("");
   const postsWrapperRef = React.useRef<HTMLDivElement>(null);
@@ -267,8 +266,8 @@ const App = () => {
       
       const date = new Date();
       const isOct19 = date.getFullYear() === 2025 && 
-                     date.getMonth() === 9 && 
-                     date.getDate() === 19;
+                      date.getMonth() === 9 && 
+                      date.getDate() === 19;
       
       setSelectedDate(isOct19 ? "nedjelja" : "subota");
     });
@@ -299,12 +298,6 @@ const App = () => {
   const olderYears = Object.keys(postsByYear)
     .filter((year) => Number(year) < Number(currentYear))
     .sort((a, b) => Number(b) - Number(a));
-  const visibleOlderYears = olderYears.slice(0, visibleOlderYearCount);
-  const hasMoreOlderYears = visibleOlderYearCount < olderYears.length;
-  const hasExpandedNews = visibleOlderYearCount > 0;
-  const visibleCurrentYearPosts = hasExpandedNews
-    ? currentYearPosts
-    : currentYearPosts.slice(0, 3);
 
   useEffect(() => {
     const isTouchDevice = () => {
@@ -453,16 +446,14 @@ const App = () => {
             <NewsSectionWrapper>
               <TitleWithScrollIndicator>
                 <Title text="Novosti" />
-                {!hasExpandedNews && (
-                  <ScrollIndicators>
-                    <ScrollArrow onClick={scrollPostsLeft}>←</ScrollArrow>
-                    <ScrollArrow onClick={scrollPostsRight}>→</ScrollArrow>
-                  </ScrollIndicators>
-                )}
+                <ScrollIndicators>
+                  <ScrollArrow onClick={scrollPostsLeft}>←</ScrollArrow>
+                  <ScrollArrow onClick={scrollPostsRight}>→</ScrollArrow>
+                </ScrollIndicators>
               </TitleWithScrollIndicator>
               <YearTitle>{currentYear}</YearTitle>
-              <PostsWrapper ref={postsWrapperRef} $isExpanded={hasExpandedNews}>
-                {visibleCurrentYearPosts.map((post) => (
+              <PostsWrapper ref={postsWrapperRef} $isExpanded={true}>
+                {currentYearPosts.map((post) => (
                   <Blogpost
                     slug={post.slug.current}
                     key={post._id}
@@ -473,7 +464,7 @@ const App = () => {
                   />
                 ))}
               </PostsWrapper>
-              {visibleOlderYears.map((year) => (
+              {olderYears.map((year) => (
                 <YearSection key={year}>
                   <YearTitle>{year}</YearTitle>
                   <ExpandedPostsWrapper>
@@ -485,23 +476,11 @@ const App = () => {
                         date={post.publishedAt}
                         image={post.mainImage}
                         isHome={true}
-                  />
+                      />
                     ))}
                   </ExpandedPostsWrapper>
                 </YearSection>
               ))}
-              <ButtonWrapper>
-                {hasMoreOlderYears && (
-                  <LoadMoreButton
-                    type="button"
-                    onClick={() =>
-                      setVisibleOlderYearCount((count) => count + 1)
-                    }
-                  >
-                    {hasExpandedNews ? "Prikaži još" : "pročitaj sve"}
-                  </LoadMoreButton>
-                )}
-              </ButtonWrapper>
             </NewsSectionWrapper>
           )}
         </ContentWrapper>
@@ -691,7 +670,7 @@ const ExpandedPostsWrapper = styled.div`
 const ButtonWrapper = styled.div`
   display: flex;
   justify-content: center;
-  margin-top: 0 rem;           
+  margin-top: 0 rem;          
   margin-bottom: 2rem;         
   a, button {
     background-color: #e374b1 !important;
@@ -721,32 +700,6 @@ const ButtonWrapper = styled.div`
   }
 `;
 
-const LoadMoreButton = styled.button`
-  width: fit-content;
-  background-color: #e374b1;
-  color: #000;
-  border: 2px solid #000;
-  box-shadow: 8px 10px 0px -2px #000;
-  font-size: 15px;
-  font-family: "Montserrat";
-  padding: 1rem 2rem;
-  transition: 0.3s;
-  margin-top: 2rem;
-  font-weight: 600;
-  font-variant: all-small-caps;
-  cursor: pointer;
-  text-decoration: none;
-
-  &:hover {
-    box-shadow: 4px 5px 0px -1px #000;
-    transform: translateY(0.5rem) translateX(0.5rem);
-  }
-
-  @media (min-width: 768px) {
-    font-size: 24px;
-  }
-`;
-
 const PosterLogo = styled.div`
   width: min(82%, 260px); 
   margin-bottom: 1.5rem;
@@ -761,7 +714,6 @@ const PosterLogo = styled.div`
   }
 `;
 
-// PROMIJENJENO: Dodan text-align: center i flex centriranje za unutarnje linije teksta naslova
 const PosterTitleContainer = styled.div`
   font-family: "Akira";
   color: #f8f8f8;
@@ -789,8 +741,6 @@ const FirstLine = styled.div`
     font-size: 4.8rem;
   }
 `;
-
-
 
 const DateLocationContainer = styled.div`
   display: flex;
