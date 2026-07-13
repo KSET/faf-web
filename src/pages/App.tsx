@@ -273,23 +273,6 @@ const App = () => {
     });
   }, []);
 
-  const scrollPostsLeft = () => {
-    if (postsWrapperRef.current) {
-      postsWrapperRef.current.scrollBy({
-        left: -300,
-        behavior: "smooth",
-      });
-    }
-  };
-
-  const scrollPostsRight = () => {
-    if (postsWrapperRef.current) {
-      postsWrapperRef.current.scrollBy({
-        left: 300,
-        behavior: "smooth",
-      });
-    }
-  };
 
   const groupedTimeslots = groupByDate(timeslots);
   const postsByYear = groupPostsByYear(posts);
@@ -765,37 +748,6 @@ const TitleWithScrollIndicator = styled.div`
   }
 `;
 
-const ScrollIndicators = styled.div`
-  display: flex;
-  gap: 0.5rem;
-`;
-
-const ScrollArrow = styled.div`
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #000;
-  width: 2.2rem;
-  height: 2.2rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #f0f0f0;
-  border: 1px solid #000;
-  border-radius: 50%;
-  box-shadow: 3px 3px 0px 0px #000;
-  cursor: pointer;
-  user-select: none;
-  transition: all 0.2s ease;
-
-  &:active {
-    transform: translateY(2px) translateX(2px);
-    box-shadow: 1px 1px 0px 0px #000;
-  }
-
-  &:hover {
-    background-color: #e8e8e8;
-  }
-`;
 
 const Location = styled.div`
   background-color: #e374b1;
