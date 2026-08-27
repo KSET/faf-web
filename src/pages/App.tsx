@@ -353,9 +353,9 @@ const App = () => {
             <Location>Klub Močvara</Location>
           </DateLocationContainer>
           
-          <ButtonWrapper>
+          {/*  <ButtonWrapper>
             <Button text="prijavi film" color="pink" link="/prijave" bold/>
-          </ButtonWrapper> 
+          </ButtonWrapper>*/}  
         </HeroContainer>
       </HeroSection>
 
