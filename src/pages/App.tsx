@@ -10,7 +10,7 @@ import "../index.css";
 import { getAllPosts, getAllTimeslots } from "../sanity";
 import { Link } from "wouter";
 import React from "react";
-import { Button } from "../components";
+//import { Button } from "../components";
 
 interface Timeslot {
   _id: string;
@@ -646,6 +646,7 @@ const ExpandedPostsWrapper = styled.div`
   }
 `;
 
+/*
 const ButtonWrapper = styled.div`
   display: flex;
   justify-content: center;
@@ -678,7 +679,7 @@ const ButtonWrapper = styled.div`
     }
   }
 `;
-
+*/
 const PosterLogo = styled.div`
   width: min(82%, 260px); 
   margin-bottom: 1.5rem;
