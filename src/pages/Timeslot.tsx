@@ -113,7 +113,8 @@ function Timeslot() {
 export const Container = styled.div`
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
+  padding: 2rem 0;
 `;
 
 const Image = styled.img`
@@ -121,22 +122,53 @@ const Image = styled.img`
 `;
 
 export const Content = styled.div`
-  margin-top: 20px;
-  width: 85%;
+  width: 90%;
   max-width: 1024px;
+  padding: 1.5rem;
+  color: #000;
+  background-color: rgba(255, 255, 255, 0.94);
+  border: 2px solid #000;
+  box-shadow: 8px 10px 0 #000;
+  box-sizing: border-box;
   font-family: "Montserrat";
   font-weight: 500;
+  font-size: 1.05rem;
+  line-height: 1.7;
+
+  p {
+    margin: 0 0 1rem;
+  }
+
+  a {
+    color: #7c2458;
+    font-weight: 700;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 2px;
+  }
+
+  @media (min-width: 768px) {
+    padding: 2rem 2.5rem;
+  }
 `;
 
 const Title = styled.h1`
-  margin: 10px 0 0px;
-  font-size: 40px;
+  margin: 0 0 1rem;
+  color: #000;
+  font-size: clamp(2rem, 5vw, 2.5rem);
+  line-height: 1.2;
 `;
 
 const Time = styled.p`
-  font-size: 25px;
-  color: #666;
-  margin: 0 0 2rem;
+  display: inline-block;
+  padding: 0.5rem 0.85rem;
+  color: #000;
+  background-color: #e374b1;
+  border: 1px solid #000;
+  box-shadow: 4px 4px 0 #000;
+  font-size: clamp(1rem, 3vw, 1.25rem);
+  font-weight: 700;
+  line-height: 1.4;
+  margin: 0 0 1.5rem;
 `;
 
 const MoviesContainer = styled.div`
@@ -151,7 +183,8 @@ const Movie = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #f9f9f9;
+  color: #000;
+  background-color: #fff;
   padding: 1rem;
   gap: 1rem;
   border: 2px solid #000;
@@ -183,16 +216,19 @@ const MovieContentContainer = styled.div`
 
 const DirectorAndDuration = styled.div`
   font-size: 15px;
+  line-height: 1.5;
 `;
 
 const MovieTitle = styled.h2`
   font-size: 30px;
   margin: 5px 0;
-word-break: break-word;
+  line-height: 1.2;
+  word-break: break-word;
 `;
 
 const MovieDescription = styled.p`
   font-size: 20px;
+  line-height: 1.6;
 `;
 
 const Spinner = styled.div`
