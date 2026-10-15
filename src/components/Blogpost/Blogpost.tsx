@@ -27,7 +27,7 @@ type ContainerProps = {
 };
 
 const Container = styled(Link)<ContainerProps>`
-  background-color: white;
+  background-color: #76a7e5;
   width: 100%;
   max-width: ${({ $isHome }) => ($isHome && "300px")};
   flex: 0 0 auto;

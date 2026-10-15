@@ -63,12 +63,12 @@ const groupByDate = (timeslots: Timeslot[]) => {
   );
 };
 
-const calculateEventHeight = (startTime: string, endTime: string) => {
-  const start = new Date(startTime);
-  const end = new Date(endTime);
-  const durationInHours = (end.getTime() - start.getTime()) / (1000 * 60 * 60);
-  return durationInHours * 100;
-};
+const formatTime = (time: string) =>
+  new Intl.DateTimeFormat("hr-HR", {
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone: "Europe/Zagreb",
+  }).format(new Date(time));
 
 const groupPostsByYear = (posts: Post[]) => {
   return posts.reduce<Record<string, Post[]>>((groupedPosts, post) => {
@@ -417,20 +417,10 @@ const App = () => {
                       }
                       key={timeslot._id}
                     >
-                      <TimeSlotContainer
-                        height={calculateEventHeight(
-                          timeslot.startTime,
-                          timeslot.endTime
-                        )}
-                      >
+                      <TimeSlotContainer>
                         <TimeLabel>
-                          {new Date(timeslot.startTime).toLocaleTimeString(
-                            "hr-HR",
-                            {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            }
-                          )}
+                          {formatTime(timeslot.startTime)} -{" "}
+                          {formatTime(timeslot.endTime)}
                         </TimeLabel>
                         <EventLabel>{timeslot.title}</EventLabel>
                       </TimeSlotContainer>
@@ -822,7 +812,7 @@ const StyledLink = styled(Link)`
 const DateButton = styled.div<{ isSelected: boolean }>`
   flex-grow: 1;
   text-align: center;
-  background-color: ${(props) => (props.isSelected ? "#a7ce64" : "#fe7677")};
+  background-color: ${(props) => (props.isSelected ? "#e374b1" : "#76a7e5")};
   color: ${(props) => (props.isSelected ? "#fff" : "#000")};
   border: 2px solid #000;
   box-shadow: 8px 10px 0px -2px #000;
@@ -845,14 +835,16 @@ const DateButton = styled.div<{ isSelected: boolean }>`
   }
 `;
 
-const TimeSlotContainer = styled.div<{ height: number }>`
+const TimeSlotContainer = styled.div`
   display: flex;
   justify-content: space-between;
+  gap: 1rem;
   background-color: white;
-  padding: 0.5rem 1rem;
+  padding: 0.75rem 1rem;
   color: #000;
   font-family: "Montserrat";
-  height: ${(props) => props.height}px;
+  min-height: 64px;
+  box-sizing: border-box;
   border: 1px solid #000;
   box-shadow: 5px 5px 0px 0px #000;
   cursor: pointer;
@@ -868,12 +860,13 @@ const TimeSlotContainer = styled.div<{ height: number }>`
 
 const TimeLabel = styled.div`
   font-weight: normal;
+  white-space: nowrap;
 `;
 
 const EventLabel = styled.div`
   font-weight: 700;
   font-size: 17px;
-  max-width: 60%;
+  max-width: 70%;
   text-align: right;
 `;
 
