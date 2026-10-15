@@ -797,7 +797,7 @@ const TimetableWrapper = styled.div`
 `;
 
 const DateChooser = styled.div`
-  background-color: white;  
+    
 display: flex;
   justify-content: center;
   align-items: stretch;
@@ -813,7 +813,7 @@ const StyledLink = styled(Link)`
 const DateButton = styled.div<{ isSelected: boolean }>`
   flex-grow: 1;
   text-align: center;
-  background-color: ${(props) => (props.isSelected ? "#e374b1" : "#76a7e5")};
+  background-color: ${(props) => (props.isSelected ? "#e374b1" : "#ffffff")};
   color: ${(props) => (props.isSelected ? "#fff" : "#000")};
   border: 2px solid #000;
   box-shadow: 8px 10px 0px -2px #000;
