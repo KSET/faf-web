@@ -33,9 +33,10 @@ const groupByDate = (timeslots: Timeslot[]) => {
   const groupedTimeslots = timeslots.reduce<Record<string, Timeslot[]>>(
     (acc, timeslot) => {
       const startDate = new Date(timeslot.startTime);
-      const formattedDate = startDate.toISOString().split("T")[0];
-      const subotaDate = "2025-10-18";
-      const dateLabel = formattedDate === subotaDate ? "subota" : "nedjelja";
+      const dateLabel = new Intl.DateTimeFormat("hr-HR", {
+        weekday: "long",
+        timeZone: "Europe/Zagreb",
+      }).format(startDate);
 
       if (!acc[dateLabel]) {
         acc[dateLabel] = [];
@@ -47,13 +48,19 @@ const groupByDate = (timeslots: Timeslot[]) => {
     {}
   );
 
-  Object.keys(groupedTimeslots).forEach((date) =>
-    groupedTimeslots[date].sort((a, b) => {
-      return new Date(a.startTime).getTime() - new Date(b.startTime).getTime();
-    })
+  Object.values(groupedTimeslots).forEach((dayTimeslots) =>
+    dayTimeslots.sort(
+      (a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime()
+    )
   );
 
-  return groupedTimeslots;
+  return Object.fromEntries(
+    Object.entries(groupedTimeslots).sort(
+      ([, firstDayTimeslots], [, secondDayTimeslots]) =>
+        new Date(firstDayTimeslots[0].startTime).getTime() -
+        new Date(secondDayTimeslots[0].startTime).getTime()
+    )
+  );
 };
 
 const calculateEventHeight = (startTime: string, endTime: string) => {
@@ -263,13 +270,17 @@ const App = () => {
 
     getAllTimeslots().then(timeslots => {
       setTimeslots(timeslots);
-      
-      const date = new Date();
-      const isOct19 = date.getFullYear() === 2025 && 
-                      date.getMonth() === 9 && 
-                      date.getDate() === 19;
-      
-      setSelectedDate(isOct19 ? "nedjelja" : "subota");
+
+      const groupedTimeslots = groupByDate(timeslots);
+      const today = new Intl.DateTimeFormat("hr-HR", {
+        weekday: "long",
+        timeZone: "Europe/Zagreb",
+      }).format(new Date());
+      const availableDates = Object.keys(groupedTimeslots);
+
+      setSelectedDate(
+        availableDates.includes(today) ? today : (availableDates[0] ?? "")
+      );
     });
   }, []);
 
@@ -383,7 +394,11 @@ const App = () => {
                   <DateButton
                     key={date}
                     isSelected={selectedDate === date}
-                    onClick={() => setSelectedDate(date)}
+                    onClick={() =>
+                      setSelectedDate((currentDate) =>
+                        currentDate === date ? "" : date
+                      )
+                    }
                   >
                     {date}
                   </DateButton>
