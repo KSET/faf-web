@@ -57,6 +57,7 @@ const StyledImg = styled.img`
 `;
 
 const Content = styled.div`
+  background-color: white;
   color: black;
   font-family: Montserrat;
   padding: 0px 20px;
