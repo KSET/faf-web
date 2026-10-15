@@ -797,7 +797,8 @@ const TimetableWrapper = styled.div`
 `;
 
 const DateChooser = styled.div`
-  display: flex;
+  background-color: white;  
+display: flex;
   justify-content: center;
   align-items: stretch;
   justify-content: stretch;
